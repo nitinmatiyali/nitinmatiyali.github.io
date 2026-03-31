@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LLMs as Synthetic Consumers — SSR Method</title>
+  <link rel="stylesheet" href="css/presentation.css">
+  <style>
+    /* overflow guard — skill rule 3: prevent content going off-screen in normal browser window */
+
+    /* centered slides: clip to viewport minus padding so nothing bleeds below */
+    .slide.layout-center .slide-content {
+      max-height: calc(100vh - var(--slide-padding) * 2);
+      overflow: hidden;
+    }
+
+    /* split slides: text column scrolls top-to-bottom; visual stays sticky */
+    .slide.layout-split .slide-text {
+      justify-content: flex-start;   /* start from top, not centered, so top is always visible */
+      overflow-y: auto;
+      max-height: 100vh;
+    }
+  </style>
+</head>
+<body>
+<div style="position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);border-bottom:1px solid #e5e7eb;height:48px;display:flex;align-items:center;padding:0 max(1.5rem,4vw);font-family:Inter,system-ui,sans-serif;gap:0;"><a href="/projects/" style="font-size:13px;font-weight:500;color:#6b7280;text-decoration:none;display:flex;align-items:center;gap:6px;">&#8592; Projects</a><span style="color:#e5e7eb;margin:0 10px;">|</span><a href="/" style="font-size:13px;font-weight:500;color:#6b7280;text-decoration:none;">Nitin Matiyali</a></div>
+<div class="presentation">
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 1: TITLE -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide title-slide layout-center active" id="slide-1">
+    <div class="slide-content">
+      <p class="label" style="letter-spacing:0.2em;">PyMC Labs · Colgate-Palmolive · 2025</p>
+      <h1>LLMs as Synthetic Consumers</h1>
+      <p class="subtitle">How Semantic Similarity Rating finally makes AI survey responses realistic</p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 2: THE PROBLEM -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide layout-center" id="slide-2">
+    <div class="slide-content">
+      <p class="label">The Stakes</p>
+      <h2>Consumer research costs <span class="text-cyan">billions</span> — and it's still unreliable</h2>
+      <div class="anim-step">
+        <div class="card-row">
+          <div class="card">
+            <p class="label">The scale</p>
+            <p>Companies spend billions of dollars annually on consumer panel surveys before launching products</p>
+          </div>
+          <div class="card">
+            <p class="label">The problem</p>
+            <p>Panels suffer from acquiescence bias, positivity bias, satisficing — and they're slow and expensive</p>
+          </div>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="key-insight">
+          <p>The central question of most surveys: <strong>Purchase Intent (PI)</strong> — rated on a 1–5 Likert scale. Getting this right predicts product success.</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <p style="color:var(--text-secondary)">So researchers wondered: could LLMs simulate consumers and replace or augment expensive panels?</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 3: THE PROMISE -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide layout-split" id="slide-3">
+    <div class="slide-text">
+      <p class="label">The Idea</p>
+      <h2>Synthetic consumers: LLMs impersonating real people</h2>
+      <p>Give an LLM a demographic persona — age, gender, income, region — then show it a product concept. Ask it to rate purchase intent.</p>
+      <div class="anim-step">
+        <div class="highlight-box">
+          <p>Prior work showed this is <em>directionally</em> promising — LLMs do track product appeal — but the ratings themselves look nothing like human distributions.</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="highlight-box orange">
+          <p>The culprit: everyone was asking LLMs to pick a number. That's the wrong question.</p>
+        </div>
+      </div>
+    </div>
+    <div class="slide-visual">
+      <div class="diagram-container">
+        <svg viewBox="0 0 500 400" font-family="Inter, sans-serif">
+          <!-- Persona box -->
+          <rect x="30" y="30" width="200" height="80" rx="8" fill="#161b40" stroke="#334" stroke-width="1.5"/>
+          <text x="130" y="60" text-anchor="middle" fill="#b0b8d0" font-size="13">System prompt</text>
+          <text x="130" y="82" text-anchor="middle" fill="#ffffff" font-size="12">Female, 34, suburban</text>
+          <text x="130" y="100" text-anchor="middle" fill="#ffffff" font-size="12">mid-income, Northeast</text>
+
+          <!-- Product box -->
+          <rect x="30" y="140" width="200" height="60" rx="8" fill="#161b40" stroke="#334" stroke-width="1.5"/>
+          <text x="130" y="165" text-anchor="middle" fill="#b0b8d0" font-size="13">Product concept</text>
+          <text x="130" y="187" text-anchor="middle" fill="#ffffff" font-size="12">AURAFOAM™ Body Wash</text>
+
+          <!-- Question box -->
+          <rect x="30" y="230" width="200" height="60" rx="8" fill="#161b40" stroke="#334" stroke-width="1.5"/>
+          <text x="130" y="255" text-anchor="middle" fill="#b0b8d0" font-size="13">Question</text>
+          <text x="130" y="275" text-anchor="middle" fill="#ffffff" font-size="11">"How likely would you buy this?"</text>
+
+          <!-- Arrow to LLM -->
+          <defs>
+            <marker id="arr-c" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+              <polygon points="0 0, 10 3.5, 0 7" fill="#00d4ff"/>
+            </marker>
+          </defs>
+          <line x1="235" y1="200" x2="290" y2="200" stroke="#00d4ff" stroke-width="2" marker-end="url(#arr-c)"/>
+
+          <!-- LLM circle -->
+          <circle cx="340" cy="200" r="50" fill="#0a1040" stroke="#00d4ff" stroke-width="2"/>
+          <text x="340" y="195" text-anchor="middle" fill="#00d4ff" font-size="14" font-weight="bold">LLM</text>
+          <text x="340" y="215" text-anchor="middle" fill="#b0b8d0" font-size="11">GPT-4o</text>
+
+          <!-- Arrow to output -->
+          <line x1="390" y1="200" x2="445" y2="200" stroke="#00d4ff" stroke-width="2" marker-end="url(#arr-c)"/>
+
+          <!-- Output -->
+          <rect x="450" y="170" width="40" height="60" rx="4" fill="#161b40" stroke="#334"/>
+          <text x="470" y="200" text-anchor="middle" fill="#ffd740" font-size="18" font-weight="bold">?</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 4: THE FUNDAMENTAL FLAW -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide layout-split" id="slide-4">
+    <div class="slide-text">
+      <p class="label">The Problem with Direct Ratings</p>
+      <h2>Ask for a number, get a <span class="text-orange">boring</span> number</h2>
+      <p>When LLMs are constrained to reply with "1, 2, 3, 4, or 5", they overwhelmingly pick <strong>3</strong>. They regress to the center.</p>
+      <div class="anim-step">
+        <div class="highlight-box orange">
+          <p>Human surveys: most responses cluster at <strong>4</strong> and <strong>5</strong>. LLMs via DLR: almost entirely <strong>3</strong>.</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="key-insight">
+          <p><strong>The problem is in how you ask, not in the model's knowledge.</strong> LLMs understand product appeal — they just can't express it naturally on a 1–5 numeric scale.</p>
+        </div>
+      </div>
+    </div>
+    <div class="slide-visual">
+      <div class="diagram-container">
+        <svg viewBox="0 0 500 420" font-family="Inter, sans-serif">
+          <defs>
+            <marker id="arr-axis" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill="#6b7394"/>
+            </marker>
+          </defs>
+
+          <!-- Title -->
+          <text x="250" y="28" text-anchor="middle" fill="#b0b8d0" font-size="13">Direct Likert Rating distributions</text>
+
+          <!-- HUMAN distribution -->
+          <text x="30" y="60" fill="#b0b8d0" font-size="12">Human (real)</text>
+          <!-- bars: 1=5%, 2=5%, 3=10%, 4=40%, 5=40% -->
+          <rect x="50"  y="160" width="40" height="5"   rx="2" fill="#6b7394" opacity="0.6"/>
+          <rect x="110" y="155" width="40" height="10"  rx="2" fill="#6b7394" opacity="0.6"/>
+          <rect x="170" y="140" width="40" height="25"  rx="2" fill="#6b7394" opacity="0.6"/>
+          <rect x="230" y="80"  width="40" height="85"  rx="2" fill="#6b7394" opacity="0.8"/>
+          <rect x="290" y="60"  width="40" height="105" rx="2" fill="#b0b8d0"/>
+          <!-- axis -->
+          <line x1="40" y1="165" x2="350" y2="165" stroke="#334" stroke-width="1.5" marker-end="url(#arr-axis)"/>
+          <text x="70"  y="182" fill="#6b7394" font-size="12" text-anchor="middle">1</text>
+          <text x="130" y="182" fill="#6b7394" font-size="12" text-anchor="middle">2</text>
+          <text x="190" y="182" fill="#6b7394" font-size="12" text-anchor="middle">3</text>
+          <text x="250" y="182" fill="#6b7394" font-size="12" text-anchor="middle">4</text>
+          <text x="310" y="182" fill="#6b7394" font-size="12" text-anchor="middle">5</text>
+
+          <!-- LLM Direct distribution -->
+          <text x="30" y="220" fill="#ff6b35" font-size="12">LLM Direct (DLR)</text>
+          <!-- bars: 1=1%, 2=2%, 3=92%, 4=4%, 5=1% — the spike at 3 -->
+          <rect x="50"  y="360" width="40" height="2"   rx="2" fill="#ff6b35" opacity="0.5"/>
+          <rect x="110" y="358" width="40" height="4"   rx="2" fill="#ff6b35" opacity="0.5"/>
+          <rect x="170" y="270" width="40" height="92"  rx="2" fill="#ff6b35"/>
+          <rect x="230" y="356" width="40" height="6"   rx="2" fill="#ff6b35" opacity="0.5"/>
+          <rect x="290" y="360" width="40" height="2"   rx="2" fill="#ff6b35" opacity="0.5"/>
+          <!-- axis -->
+          <line x1="40" y1="362" x2="350" y2="362" stroke="#334" stroke-width="1.5" marker-end="url(#arr-axis)"/>
+          <text x="70"  y="378" fill="#6b7394" font-size="12" text-anchor="middle">1</text>
+          <text x="130" y="378" fill="#6b7394" font-size="12" text-anchor="middle">2</text>
+          <text x="190" y="378" fill="#ff6b35" font-size="12" font-weight="bold" text-anchor="middle">3</text>
+          <text x="250" y="378" fill="#6b7394" font-size="12" text-anchor="middle">4</text>
+          <text x="310" y="378" fill="#6b7394" font-size="12" text-anchor="middle">5</text>
+
+          <!-- KS similarity label -->
+          <text x="390" y="130" fill="#ff6b35" font-size="11">K = 0.26</text>
+          <text x="390" y="148" fill="#6b7394" font-size="10">(very low)</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 5: SECTION BREAK -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide section-transition layout-center" id="slide-5">
+    <div class="slide-content">
+      <p class="label">The Solution</p>
+      <h2 class="gradient-text">Semantic Similarity Rating (SSR)</h2>
+      <p>Stop asking for numbers. Ask for words — then map words to numbers using embeddings.</p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 6: SSR — THE CORE IDEA -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide layout-center" id="slide-6">
+    <div class="slide-content">
+      <p class="label">SSR Core Insight</p>
+      <h2>Let the LLM <span class="text-cyan">speak freely</span>, then measure where it lands</h2>
+      <div class="anim-step">
+        <div class="card-row">
+          <div class="card">
+            <p class="label">Step 1</p>
+            <p>The AI generates a <strong>free-text</strong> response about purchase intent — no number constraint</p>
+          </div>
+          <div class="card">
+            <p class="label">Step 2</p>
+            <p>The response is converted into a numerical "meaning fingerprint" that captures the sentiment</p>
+            <p style="color:var(--text-dim); font-size:clamp(11px,1.1vw,16px);">(This is called embedding — a standard text-to-numbers conversion)</p>
+          </div>
+          <div class="card">
+            <p class="label">Step 3</p>
+            <p>Compare the fingerprint against 5 <strong>anchor statements</strong>, one per rating point</p>
+            <p style="color:var(--text-dim); font-size:clamp(11px,1.1vw,16px);">(Similarity = how close in meaning — 1.0 = identical, 0 = unrelated)</p>
+          </div>
+        </div>
+      </div>
+      <div class="anim-step">
+        <blockquote>
+          <p>"I'm somewhat interested. If it works well and isn't too expensive, I might give it a try."</p>
+          <span class="attribution">Example AI response — maps naturally to a 3–4 distribution</span>
+        </blockquote>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide layout-center" id="slide-6b">
+    <div class="slide-content">
+      <p class="label">SSR Core Insight</p>
+      <h2>From words to a <span class="text-cyan">probability distribution</span></h2>
+      <div class="anim-step">
+        <div class="key-insight">
+          <p>Instead of forcing a single number, SSR produces the <strong>full spread of probabilities</strong> across all 5 rating points — closer to how real human responses are distributed.</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="highlight-box green">
+          <p>This means you can see: 5% chance of rating 1, 10% chance of rating 2, 35% chance of rating 3, 40% chance of rating 4, 10% chance of rating 5. That's a much richer signal than just "3.4 out of 5."</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 7: SSR PIPELINE DIAGRAM -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide layout-split" id="slide-7">
+    <div class="slide-text">
+      <p class="label">SSR Pipeline</p>
+      <h2>From free text to a Likert distribution</h2>
+      <p>The synthetic consumer speaks. The embedding model listens. The anchor set translates.</p>
+      <div class="anim-step">
+        <div class="highlight-box">
+          <p><strong>Anchor statements</strong> (5 total, one per Likert point):</p>
+          <p style="margin-top:8px; font-size:0.9em">1 → "It's rather unlikely I'd buy it."</p>
+          <p style="font-size:0.9em">3 → "I might consider buying it."</p>
+          <p style="font-size:0.9em">5 → "It's very likely I'd buy it."</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="highlight-box green">
+          <p>Cosine similarity between the response embedding and each anchor embedding → proportional to Likert probability</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <p style="color:var(--text-secondary); font-size:0.9em">They use OpenAI's <code>text-embedding-3-small</code> and average over 6 different reference statement sets to reduce noise.</p>
+      </div>
+    </div>
+    <div class="slide-visual">
+      <div class="diagram-container">
+        <svg viewBox="0 0 500 440" font-family="Inter, sans-serif">
+          <defs>
+            <marker id="arr-g" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+              <polygon points="0 0, 10 3.5, 0 7" fill="#00e676"/>
+            </marker>
+            <marker id="arr-w" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+              <polygon points="0 0, 10 3.5, 0 7" fill="#b0b8d0"/>
+            </marker>
+            <marker id="arr-y" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+              <polygon points="0 0, 10 3.5, 0 7" fill="#ffd740"/>
+            </marker>
+          </defs>
+
+          <!-- Free text response box -->
+          <rect x="10" y="20" width="200" height="70" rx="8" fill="#161b40" stroke="#00e676" stroke-width="1.5"/>
+          <text x="110" y="44" text-anchor="middle" fill="#00e676" font-size="11" font-weight="bold">FREE TEXT RESPONSE</text>
+          <text x="110" y="62" text-anchor="middle" fill="#b0b8d0" font-size="10">"I'm somewhat interested.</text>
+          <text x="110" y="78" text-anchor="middle" fill="#b0b8d0" font-size="10">Might give it a try..."</text>
+
+          <!-- Arrow down to embedding -->
+          <line x1="110" y1="94" x2="110" y2="128" stroke="#00e676" stroke-width="2" marker-end="url(#arr-g)"/>
+
+          <!-- Embedding box -->
+          <rect x="20" y="132" width="180" height="50" rx="8" fill="#0a1a20" stroke="#00d4ff" stroke-width="1.5"/>
+          <text x="110" y="153" text-anchor="middle" fill="#00d4ff" font-size="11" font-weight="bold">EMBEDDING MODEL</text>
+          <text x="110" y="171" text-anchor="middle" fill="#6b7394" font-size="10">text-embedding-3-small</text>
+
+          <!-- Arrow to vector -->
+          <line x1="110" y1="185" x2="110" y2="218" stroke="#00d4ff" stroke-width="2" marker-end="url(#arr-g)"/>
+
+          <!-- Vector representation -->
+          <rect x="10" y="222" width="200" height="40" rx="6" fill="#161b40" stroke="#334"/>
+          <text x="110" y="247" text-anchor="middle" fill="#b0b8d0" font-size="10">[0.345, 0.214, 1.234, 0.545, ...]</text>
+
+          <!-- Arrow right to comparison -->
+          <line x1="215" y1="242" x2="258" y2="242" stroke="#b0b8d0" stroke-width="2" marker-end="url(#arr-w)"/>
+
+          <!-- Anchor comparison -->
+          <rect x="262" y="40" width="220" height="400" rx="8" fill="#0d1020" stroke="#334" stroke-width="1"/>
+          <text x="372" y="68" text-anchor="middle" fill="#b0b8d0" font-size="12" font-weight="bold">Anchor Statements</text>
+
+          <!-- Anchor 1 -->
+          <rect x="272" y="80" width="200" height="48" rx="4" fill="#1a0a0a" stroke="#ff5252" stroke-width="1"/>
+          <text x="372" y="100" text-anchor="middle" fill="#ff5252" font-size="11">1 — "Unlikely I'd buy it"</text>
+          <text x="372" y="118" text-anchor="middle" fill="#6b7394" font-size="10">sim = 0.21  →  p(1) = 0.05</text>
+
+          <!-- Anchor 2 -->
+          <rect x="272" y="138" width="200" height="48" rx="4" fill="#121518" stroke="#ff6b35" stroke-width="1"/>
+          <text x="372" y="158" text-anchor="middle" fill="#ff6b35" font-size="11">2 — "I probably wouldn't"</text>
+          <text x="372" y="176" text-anchor="middle" fill="#6b7394" font-size="10">sim = 0.31  →  p(2) = 0.10</text>
+
+          <!-- Anchor 3 -->
+          <rect x="272" y="196" width="200" height="48" rx="4" fill="#151520" stroke="#ffd740" stroke-width="1.5"/>
+          <text x="372" y="216" text-anchor="middle" fill="#ffd740" font-size="11">3 — "I might consider it"</text>
+          <text x="372" y="234" text-anchor="middle" fill="#6b7394" font-size="10">sim = 0.68  →  p(3) = 0.35</text>
+
+          <!-- Anchor 4 -->
+          <rect x="272" y="254" width="200" height="48" rx="4" fill="#0a1a10" stroke="#00e676" stroke-width="1.5"/>
+          <text x="372" y="274" text-anchor="middle" fill="#00e676" font-size="11">4 — "I'd probably buy it"</text>
+          <text x="372" y="292" text-anchor="middle" fill="#6b7394" font-size="10">sim = 0.82  →  p(4) = 0.40</text>
+
+          <!-- Anchor 5 -->
+          <rect x="272" y="312" width="200" height="48" rx="4" fill="#0a1520" stroke="#00d4ff" stroke-width="1"/>
+          <text x="372" y="332" text-anchor="middle" fill="#00d4ff" font-size="11">5 — "Very likely I'd buy it"</text>
+          <text x="372" y="350" text-anchor="middle" fill="#6b7394" font-size="10">sim = 0.55  →  p(5) = 0.10</text>
+
+          <!-- Output label -->
+          <text x="372" y="400" text-anchor="middle" fill="#00e676" font-size="11" font-weight="bold">→ pmf over 1–5 Likert scale</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 8: THE MATH -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide layout-center" id="slide-8">
+    <div class="slide-content">
+      <p class="label">How It Works</p>
+      <h2>Meaning measured by <span class="text-cyan">direction</span></h2>
+      <div class="anim-step">
+        <div class="highlight-box">
+          <p>Each piece of text — the free-text response and each anchor phrase — gets converted into a list of numbers that captures its meaning. Think of it as a GPS coordinate in "idea space."</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <p>Two GPS points close together = similar meaning. Points far apart = different meaning.</p>
+        <p style="color:var(--text-dim); font-size:clamp(13px,1.4vw,20px);">This is called cosine similarity — a standard way of comparing text meanings without needing any training data.</p>
+      </div>
+      <div class="anim-step">
+        <div class="highlight-box green">
+          <p>The response embedding is compared to all 5 anchor embeddings. The closer the meaning, the more probability weight that anchor gets. The result is normalized to sum to 100%.</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="key-insight">
+          <p>No AI training needed. No labeled survey data. One set of 5 anchor phrases, crafted once, works across all product categories.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 9: THREE METHODS COMPARED -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide layout-split" id="slide-9">
+    <div class="slide-text">
+      <p class="label">Experimental Setup</p>
+      <h2>Three methods head-to-head</h2>
+      <p>Tested on <strong>57 consumer surveys</strong> for personal care products from a leading corporation. 9,300 unique human participants total.</p>
+      <div class="anim-step">
+        <div class="card-row">
+          <div class="card">
+            <p class="label" style="color:var(--accent-pink)">DLR</p>
+            <p>Direct Likert Rating — just ask for 1–5</p>
+          </div>
+        </div>
+        <div class="card-row" style="margin-top:8px">
+          <div class="card">
+            <p class="label" style="color:var(--accent-green)">FLR</p>
+            <p>Follow-up Likert Rating — text first, then same LLM maps to number</p>
+          </div>
+        </div>
+        <div class="card-row" style="margin-top:8px">
+          <div class="card">
+            <p class="label" style="color:var(--accent-cyan)">SSR</p>
+            <p>Semantic Similarity Rating — text first, then embedding cosine similarity</p>
+          </div>
+        </div>
+      </div>
+      <div class="anim-step">
+        <p style="color:var(--text-secondary); font-size:0.9em">Both GPT-4o and Gemini-2-flash were tested. Two metrics: distributional similarity (K^xy) and correlation attainment (ρ).</p>
+      </div>
+    </div>
+    <div class="slide-visual">
+      <div class="diagram-container">
+        <svg viewBox="0 0 500 400" font-family="Inter, sans-serif">
+          <defs>
+            <marker id="arr-p" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+              <polygon points="0 0, 10 3.5, 0 7" fill="#b388ff"/>
+            </marker>
+          </defs>
+
+          <!-- Title -->
+          <text x="250" y="30" text-anchor="middle" fill="#b0b8d0" font-size="13" font-weight="bold">Study: 57 surveys × 150–400 humans each</text>
+
+          <!-- Icons for the three methods -->
+          <!-- DLR -->
+          <rect x="40" y="55" width="120" height="100" rx="10" fill="#1a0818" stroke="#ff4081" stroke-width="1.5"/>
+          <text x="100" y="90" text-anchor="middle" fill="#ff4081" font-size="20" font-weight="bold">DLR</text>
+          <text x="100" y="115" text-anchor="middle" fill="#b0b8d0" font-size="11">Direct</text>
+          <text x="100" y="133" text-anchor="middle" fill="#b0b8d0" font-size="11">Numeric</text>
+
+          <!-- FLR -->
+          <rect x="190" y="55" width="120" height="100" rx="10" fill="#0a1a10" stroke="#00e676" stroke-width="1.5"/>
+          <text x="250" y="90" text-anchor="middle" fill="#00e676" font-size="20" font-weight="bold">FLR</text>
+          <text x="250" y="115" text-anchor="middle" fill="#b0b8d0" font-size="11">Text → LLM</text>
+          <text x="250" y="133" text-anchor="middle" fill="#b0b8d0" font-size="11">rates text</text>
+
+          <!-- SSR -->
+          <rect x="340" y="55" width="120" height="100" rx="10" fill="#0a1020" stroke="#00d4ff" stroke-width="2"/>
+          <text x="400" y="90" text-anchor="middle" fill="#00d4ff" font-size="20" font-weight="bold">SSR</text>
+          <text x="400" y="115" text-anchor="middle" fill="#b0b8d0" font-size="11">Text → Embed</text>
+          <text x="400" y="133" text-anchor="middle" fill="#b0b8d0" font-size="11">→ cosine sim</text>
+
+          <!-- Score bars: distributional similarity score — GPT-4o results -->
+          <text x="250" y="190" text-anchor="middle" fill="#b0b8d0" font-size="12" font-weight="bold">Distributional Similarity Score</text>
+
+          <!-- DLR bar: 0.26 — positive height, y = baseline - bar_height -->
+          <rect x="50" y="245" width="80" height="75" rx="4" fill="#ff4081" opacity="0.8"/>
+          <text x="90" y="233" text-anchor="middle" fill="#ff4081" font-size="13" font-weight="bold">0.26</text>
+          <text x="90" y="345" text-anchor="middle" fill="#6b7394" font-size="11">DLR</text>
+
+          <!-- FLR bar: 0.72 -->
+          <rect x="210" y="111" width="80" height="209" rx="4" fill="#00e676" opacity="0.8"/>
+          <text x="250" y="99" text-anchor="middle" fill="#00e676" font-size="13" font-weight="bold">0.72</text>
+          <text x="250" y="345" text-anchor="middle" fill="#6b7394" font-size="11">FLR</text>
+
+          <!-- SSR bar: 0.88 -->
+          <rect x="360" y="65" width="80" height="255" rx="4" fill="#00d4ff" opacity="0.9"/>
+          <text x="400" y="53" text-anchor="middle" fill="#00d4ff" font-size="13" font-weight="bold">0.88</text>
+          <text x="400" y="345" text-anchor="middle" fill="#6b7394" font-size="11">SSR</text>
+
+          <!-- baseline -->
+          <line x1="30" y1="320" x2="470" y2="320" stroke="#334" stroke-width="1.5"/>
+          <text x="25" y="324" fill="#6b7394" font-size="10" text-anchor="end">0</text>
+          <text x="25" y="175" fill="#6b7394" font-size="10" text-anchor="end">0.5</text>
+          <text x="25" y="30" fill="#6b7394" font-size="10" text-anchor="end">1.0</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 10: SECTION BREAK — RESULTS -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide section-transition layout-center" id="slide-10">
+    <div class="slide-content">
+      <p class="label">Part 2</p>
+      <h2 class="gradient-text">The Results</h2>
+      <p>How well does SSR actually replicate human surveys?</p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 11: KEY METRICS -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide layout-center" id="slide-11">
+    <div class="slide-content">
+      <p class="label">Main Results</p>
+      <h2>SSR achieves <span class="text-cyan">90%</span> of human test-retest reliability</h2>
+      <div class="anim-step">
+        <div class="highlight-box">
+          <p><strong>Two metrics matter here:</strong></p>
+          <p><strong>Correlation attainment</strong> — how close the AI-to-human agreement is to the best any method could ever achieve. 90% means nearly all available signal is captured.</p>
+          <p style="margin-top:8px"><strong>Distributional similarity</strong> — does the spread of AI responses match the spread of human responses? (Not just the average, but the shape of the distribution.)</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="two-col">
+          <div>
+            <p class="big-number text-cyan">90%</p>
+            <p>Correlation attainment<br>SSR with GPT-4o</p>
+          </div>
+          <div>
+            <p class="big-number text-green">0.88</p>
+            <p>Distributional similarity<br>vs 0.26 for Direct Likert Rating</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide layout-center" id="slide-11b">
+    <div class="slide-content">
+      <p class="label">Method Comparison</p>
+      <h2>All three methods <span class="text-cyan">head-to-head</span></h2>
+      <div class="anim-step">
+        <div class="card-row">
+          <div class="card">
+            <p class="label" style="color:var(--accent-pink)">Direct Likert Rating</p>
+            <p class="big-number text-orange" style="font-size:1.8rem">80%</p>
+            <p>correlation attainment</p>
+            <p style="color:var(--text-dim); font-size:0.85em">Distribution similarity = 0.26 (poor shape match)</p>
+          </div>
+          <div class="card">
+            <p class="label" style="color:var(--accent-green)">Follow-up Likert Rating</p>
+            <p class="big-number text-green" style="font-size:1.8rem">85%</p>
+            <p>correlation attainment</p>
+            <p style="color:var(--text-dim); font-size:0.85em">Distribution similarity = 0.72 (better)</p>
+          </div>
+          <div class="card">
+            <p class="label" style="color:var(--accent-cyan)">Semantic Similarity Rating ★</p>
+            <p class="big-number text-cyan" style="font-size:1.8rem">90%</p>
+            <p>correlation attainment</p>
+            <p style="color:var(--text-dim); font-size:0.85em">Distribution similarity = 0.88 (near-human)</p>
+          </div>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="key-insight">
+          <p>The distributional similarity gap is the headline story: Direct Likert Rating gets 0.26, Semantic Similarity Rating gets 0.88 — a 3× improvement in capturing how opinions actually spread across the scale.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 12: DISTRIBUTION COMPARISON VISUAL -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide layout-split" id="slide-12">
+    <div class="slide-text">
+      <p class="label">Distribution Quality</p>
+      <h2>SSR distributions look <span class="text-cyan">human</span></h2>
+      <p>The key advance: SSR produces realistic spread across the 1–5 scale, not the "3-spike" seen with direct rating.</p>
+      <div class="anim-step">
+        <div class="highlight-box">
+          <p>For DLR: nearly all responses pile on <strong>3</strong>. KS similarity ≈ 0.26 — barely above random.</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="highlight-box orange">
+          <p>For FLR: better spread, but still too narrow around the mean. KS similarity ≈ 0.72.</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="highlight-box green">
+          <p>For SSR: the distribution closely mirrors human data — proper spread, correct shape. KS similarity ≈ 0.88.</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="key-insight">
+          <p>This matters because a product getting 40% "5s" and 30% "4s" is very different from one getting 60% "3s" — even if the mean is similar.</p>
+        </div>
+      </div>
+    </div>
+    <div class="slide-visual">
+      <div class="diagram-container">
+        <svg viewBox="0 0 500 440" font-family="Inter, sans-serif">
+          <!-- Three distribution panels stacked -->
+          <!-- Shared axis helper -->
+
+          <!-- HUMAN (reference) -->
+          <text x="240" y="22" text-anchor="middle" fill="#b0b8d0" font-size="12" font-weight="bold">Human survey (reference)</text>
+          <rect x="40"  y="100" width="40" height="8"   rx="2" fill="#b0b8d0" opacity="0.5"/>
+          <rect x="100" y="96"  width="40" height="12"  rx="2" fill="#b0b8d0" opacity="0.6"/>
+          <rect x="160" y="80"  width="40" height="28"  rx="2" fill="#b0b8d0" opacity="0.7"/>
+          <rect x="220" y="52"  width="40" height="56"  rx="2" fill="#b0b8d0" opacity="0.9"/>
+          <rect x="280" y="36"  width="40" height="72"  rx="2" fill="#ffffff"/>
+          <line x1="30" y1="108" x2="340" y2="108" stroke="#334" stroke-width="1"/>
+          <text x="60"  y="122" fill="#6b7394" font-size="11" text-anchor="middle">1</text>
+          <text x="120" y="122" fill="#6b7394" font-size="11" text-anchor="middle">2</text>
+          <text x="180" y="122" fill="#6b7394" font-size="11" text-anchor="middle">3</text>
+          <text x="240" y="122" fill="#6b7394" font-size="11" text-anchor="middle">4</text>
+          <text x="300" y="122" fill="#6b7394" font-size="11" text-anchor="middle">5</text>
+
+          <!-- DLR -->
+          <text x="240" y="155" text-anchor="middle" fill="#ff4081" font-size="12" font-weight="bold">DLR — spike at 3</text>
+          <rect x="40"  y="240" width="40" height="2"   rx="2" fill="#ff4081" opacity="0.4"/>
+          <rect x="100" y="238" width="40" height="4"   rx="2" fill="#ff4081" opacity="0.5"/>
+          <rect x="160" y="170" width="40" height="72"  rx="2" fill="#ff4081"/>
+          <rect x="220" y="237" width="40" height="5"   rx="2" fill="#ff4081" opacity="0.5"/>
+          <rect x="280" y="240" width="40" height="2"   rx="2" fill="#ff4081" opacity="0.4"/>
+          <line x1="30" y1="242" x2="340" y2="242" stroke="#334" stroke-width="1"/>
+          <text x="60"  y="256" fill="#6b7394" font-size="11" text-anchor="middle">1</text>
+          <text x="120" y="256" fill="#6b7394" font-size="11" text-anchor="middle">2</text>
+          <text x="180" y="256" fill="#ff4081" font-size="11" text-anchor="middle">3 ★</text>
+          <text x="240" y="256" fill="#6b7394" font-size="11" text-anchor="middle">4</text>
+          <text x="300" y="256" fill="#6b7394" font-size="11" text-anchor="middle">5</text>
+
+          <!-- SSR -->
+          <text x="240" y="286" text-anchor="middle" fill="#00d4ff" font-size="12" font-weight="bold">SSR — matches human shape</text>
+          <rect x="40"  y="370" width="40" height="8"   rx="2" fill="#00d4ff" opacity="0.4"/>
+          <rect x="100" y="366" width="40" height="12"  rx="2" fill="#00d4ff" opacity="0.5"/>
+          <rect x="160" y="350" width="40" height="28"  rx="2" fill="#00d4ff" opacity="0.7"/>
+          <rect x="220" y="322" width="40" height="56"  rx="2" fill="#00d4ff" opacity="0.9"/>
+          <rect x="280" y="308" width="40" height="70"  rx="2" fill="#00d4ff"/>
+          <line x1="30" y1="378" x2="340" y2="378" stroke="#334" stroke-width="1"/>
+          <text x="60"  y="392" fill="#6b7394" font-size="11" text-anchor="middle">1</text>
+          <text x="120" y="392" fill="#6b7394" font-size="11" text-anchor="middle">2</text>
+          <text x="180" y="392" fill="#6b7394" font-size="11" text-anchor="middle">3</text>
+          <text x="240" y="392" fill="#6b7394" font-size="11" text-anchor="middle">4</text>
+          <text x="300" y="392" fill="#00d4ff" font-size="11" text-anchor="middle">5 ↑</text>
+
+          <!-- K values -->
+          <text x="390" y="108" fill="#6b7394" font-size="11">K = 1.0</text>
+          <text x="390" y="242" fill="#ff4081" font-size="11">K = 0.26</text>
+          <text x="390" y="378" fill="#00d4ff" font-size="11">K = 0.88</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 13: DEMOGRAPHICS -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide layout-center" id="slide-13">
+    <div class="slide-content">
+      <p class="label">Demographic Conditioning</p>
+      <h2>Demographics matter — but not all equally</h2>
+      <div class="anim-step">
+        <div class="card-row">
+          <div class="card">
+            <p class="label" style="color:var(--accent-green)">Works well</p>
+            <p><strong>Age</strong> — younger and older consumers rate lower than middle-aged. The AI replicates this pattern correctly.</p>
+          </div>
+          <div class="card">
+            <p class="label" style="color:var(--accent-green)">Works well</p>
+            <p><strong>Income</strong> — the AI captures budget sensitivity well, especially when the persona statement references price constraints.</p>
+          </div>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="card-row">
+          <div class="card">
+            <p class="label" style="color:var(--accent-orange)">Use with caution</p>
+            <p><strong>Gender</strong> — the AI sometimes reverses direction vs. human data. Treat gender splits as directional only.</p>
+          </div>
+          <div class="card">
+            <p class="label" style="color:var(--accent-orange)">Use with caution</p>
+            <p><strong>Region</strong> — geographic purchasing patterns are not well captured. Avoid regional sub-group analysis.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide layout-center" id="slide-13b">
+    <div class="slide-content">
+      <p class="label">Demographic Conditioning</p>
+      <h2>Without demographics, the signal <span class="text-orange">collapses</span></h2>
+      <div class="anim-step">
+        <div class="key-insight">
+          <p>When no demographic persona is given, the AI rates nearly every product 4 or 5 out of 5. All products look equal. Correlation attainment drops from 90% to 50% — barely better than random.</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="highlight-box">
+          <p><strong>Practical implication:</strong> Always include demographic personas — age, income, and relevant lifestyle descriptors. This is what makes SSR useful for product differentiation rather than just general sentiment.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 14: QUALITATIVE BONUS -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide layout-center" id="slide-14">
+    <div class="slide-content">
+      <p class="label">Unexpected Bonus</p>
+      <h2>Free text = <span class="text-green">free qualitative research</span></h2>
+      <p>Because SSR requires free-text responses first, you get rich qualitative feedback as a byproduct — something direct Likert ratings can't provide.</p>
+      <div class="anim-step">
+        <blockquote>
+          <p>"The ease of use and the promise of no sensitivity are appealing. Plus, it's from a trusted brand."</p>
+          <span class="attribution">Synthetic consumer on a high-rated concept</span>
+        </blockquote>
+      </div>
+      <div class="anim-step">
+        <blockquote>
+          <p>"It seems a bit too high-end for my needs and budget. These body parts don't usually bother me."</p>
+          <span class="attribution">Synthetic consumer on a low-rated concept</span>
+        </blockquote>
+      </div>
+      <div class="anim-step">
+        <div class="highlight-box green">
+          <p>Unlike human open-ends ("It's good", "Not much"), LLM responses are information-rich, highlight features, surface objections, and explain the rating — all automatically.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 15: VS SUPERVISED ML -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide layout-center" id="slide-15">
+    <div class="slide-content">
+      <p class="label">Comparison</p>
+      <h2>SSR beats a supervised LightGBM model</h2>
+      <div class="anim-step">
+        <p>They trained 300 machine learning models (LightGBM classifiers) on historical demographic and product data — the type of proprietary model a large company might actually build — testing on held-out surveys.</p>
+      </div>
+      <div class="anim-step">
+        <div class="two-col">
+          <div>
+            <p class="big-number text-orange" style="font-size:2rem">65%</p>
+            <p>LightGBM correlation attainment</p>
+          </div>
+          <div>
+            <p class="big-number text-cyan" style="font-size:2rem">88–90%</p>
+            <p>SSR correlation attainment</p>
+          </div>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="key-insight">
+          <p>The AI approach — which needs <strong>no training data or setup at all</strong> (called "zero-shot") — outperforms a custom model trained on years of actual survey data. The reason: AI understands product descriptions semantically, not just as data rows.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 16: LIMITATIONS -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide layout-center" id="slide-16">
+    <div class="slide-content">
+      <p class="label">Limitations</p>
+      <h2>Where Semantic Similarity Rating still falls short</h2>
+      <div class="anim-step">
+        <div class="card-row">
+          <div class="card">
+            <p class="label" style="color:var(--accent-pink)">Anchor wording sensitivity</p>
+            <p>Slightly different anchor phrases produce slightly different distributions. The paper averages across 6 phrase variants to reduce this noise.</p>
+          </div>
+          <div class="card">
+            <p class="label" style="color:var(--accent-pink)">Domain dependence</p>
+            <p>Works well for personal care and consumer goods — categories the AI has seen extensively. Novel or niche domains may produce unreliable results.</p>
+          </div>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="card-row">
+          <div class="card">
+            <p class="label" style="color:var(--accent-pink)">Gender and region</p>
+            <p>Sub-group analyses by gender and region are unreliable — the AI sometimes reverses the direction. Use these cuts as directional signals only.</p>
+          </div>
+          <div class="card">
+            <p class="label" style="color:var(--accent-pink)">Real purchasing behavior</p>
+            <p>Cannot account for price, shelf availability, promotions, or competitive context. Measures attitude, not behavior.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide layout-center" id="slide-16b">
+    <div class="slide-content">
+      <p class="label">Limitations</p>
+      <h2>Best fit vs. <span class="text-orange">poor fit</span></h2>
+      <div class="anim-step">
+        <div class="two-col">
+          <div>
+            <p class="label" style="color:var(--accent-green)">Good fit</p>
+            <ul>
+              <li>Early-stage concept screening</li>
+              <li>High-volume testing (50+ concepts)</li>
+              <li>Consumer goods, personal care, food</li>
+              <li>Age and income segmentation</li>
+            </ul>
+          </div>
+          <div>
+            <p class="label" style="color:var(--accent-orange)">Poor fit</p>
+            <ul>
+              <li class="bullet-orange">Final go/no-go decisions alone</li>
+              <li class="bullet-orange">Gender or regional deep-dives</li>
+              <li class="bullet-orange">Niche or technical products</li>
+              <li class="bullet-orange">Predicting actual purchase rates</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="highlight-box orange">
+          <p>Use SSR to narrow the field. Use human panels to make the final call. The two methods are complements, not substitutes.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 17: SECTION BREAK — IMPLICATIONS -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide section-transition layout-center" id="slide-17">
+    <div class="slide-content">
+      <p class="label">Part 3</p>
+      <h2 class="gradient-text">What This Changes</h2>
+      <p>The practical implications for consumer and market research</p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 18: IMPLICATIONS FOR RESEARCH -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide layout-center" id="slide-18">
+    <div class="slide-content">
+      <p class="label">Practical Implications</p>
+      <h2>A new screening layer before human panels</h2>
+      <div class="anim-step">
+        <p>SSR enables a new workflow: run synthetic panels first to screen concepts, reserve expensive human panels for top candidates.</p>
+      </div>
+      <div class="anim-step">
+        <div class="card-row">
+          <div class="card">
+            <p class="label">Before SSR</p>
+            <p>Every concept idea → expensive human survey → weeks of wait → decision</p>
+          </div>
+          <div class="card">
+            <p class="label" style="color:var(--accent-cyan)">After SSR</p>
+            <p>50 concepts → cheap synthetic screen → top 5 → human survey → decision</p>
+          </div>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="highlight-box">
+          <p><strong>No setup required.</strong> Works across product categories from day one — no labeled data, no custom model to build or maintain.</p>
+          <p style="margin-top:8px; color:var(--text-secondary)">Bonus: the free-text responses explain <em>why</em> concepts score the way they do — automatic qualitative feedback no numeric rating can provide.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 19: KEY TAKEAWAYS -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide layout-center" id="slide-19">
+    <div class="slide-content">
+      <p class="label">Summary</p>
+      <h2>The 4 things to remember</h2>
+      <div class="anim-step">
+        <div class="card-row">
+          <div class="card">
+            <p class="label">1</p>
+            <p>The problem with AI surveys was <strong>how you ask</strong>, not the AI's knowledge. Stop asking for numbers.</p>
+          </div>
+          <div class="card">
+            <p class="label">2</p>
+            <p>Semantic Similarity Rating: AI speaks freely → meaning fingerprint → compare to 5 anchor phrases → probability spread</p>
+          </div>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="card-row">
+          <div class="card">
+            <p class="label">3</p>
+            <p>Achieves <strong>90% of the best possible performance</strong> across 57 real surveys — with zero training data required</p>
+          </div>
+          <div class="card">
+            <p class="label">4</p>
+            <p>Free-text responses give you <strong>qualitative rationales</strong> automatically — a bonus no Likert scale can provide</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide layout-center" id="slide-19b">
+    <div class="slide-content">
+      <p class="label">Get Started</p>
+      <h2>Open source and <span class="text-green">ready to use</span></h2>
+      <div class="anim-step">
+        <div class="highlight-box green">
+          <p>Open-source Python implementation: <strong>pymc-labs/semantic-similarity-rating</strong> on GitHub</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="highlight-box">
+          <p>Works with any LLM (tested with GPT-4o and Gemini). Plug in your product concepts, add demographic personas, get distributions back. No model training, no data labeling.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 20: CLOSING -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide title-slide layout-center" id="slide-20">
+    <div class="slide-content">
+      <p class="label" style="letter-spacing:0.2em;">Maier, Aslak, Fiaschi et al. · PyMC Labs · 2025</p>
+      <h1>Ask for words.<br>Let embeddings do the math.</h1>
+      <p class="subtitle">Semantic Similarity Rating — a better way to hear what LLMs actually think.</p>
+    </div>
+  </section>
+
+</div>
+
+<!-- Fixed chrome -->
+<div class="progress-bar"></div>
+<div class="slide-counter"></div>
+<div class="step-indicator"></div>
+<div class="nav-hint">Right arrow to advance · Left arrow to go back · F for fullscreen</div>
+
+<script src="js/presentation.js"></script>
+</body>
+</html>

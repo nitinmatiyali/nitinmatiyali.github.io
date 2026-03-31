@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mission Possible — High-Quality Online Data</title>
+  <link rel="stylesheet" href="css/presentation.css">
+  <style>
+    .slide.layout-center .slide-content {
+      max-height: calc(100vh - var(--slide-padding) * 2);
+      overflow: hidden;
+    }
+    .slide.layout-split .slide-text {
+      justify-content: flex-start;
+      overflow-y: auto;
+      max-height: 100vh;
+    }
+  </style>
+</head>
+<body>
+<div style="position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);border-bottom:1px solid #e5e7eb;height:48px;display:flex;align-items:center;padding:0 max(1.5rem,4vw);font-family:Inter,system-ui,sans-serif;gap:0;"><a href="/projects/" style="font-size:13px;font-weight:500;color:#6b7280;text-decoration:none;display:flex;align-items:center;gap:6px;">&#8592; Projects</a><span style="color:#e5e7eb;margin:0 10px;">|</span><a href="/" style="font-size:13px;font-weight:500;color:#6b7280;text-decoration:none;">Nitin Matiyali</a></div>
+<div class="presentation">
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 1: TITLE -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide title-slide layout-center active" id="slide-1">
+    <div class="slide-content">
+      <p class="label" style="letter-spacing:0.2em;">CESifo · Çelebi, Exley, Harrs, Kivimaki, Serra-Garcia, Yusof · 2026</p>
+      <h1>Mission Possible</h1>
+      <p class="subtitle">Can you still collect high-quality data from online surveys in the age of AI agents?</p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 2: THE PROBLEM -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide layout-center" id="slide-2">
+    <div class="slide-content">
+      <p class="label">The Stakes</p>
+      <h2>Online surveys power social science — but the <span class="text-orange">signal is getting noisier</span></h2>
+      <div class="anim-step">
+        <div class="card-row">
+          <div class="card">
+            <p class="label">The upside</p>
+            <p>Online surveys offer large, diverse, cost-effective samples — critical for social science at scale</p>
+          </div>
+          <div class="card">
+            <p class="label">The new threat</p>
+            <p>AI agents can now autonomously complete surveys. Participants may use LLMs to answer. Fraudulent accounts multiply responses.</p>
+          </div>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="key-insight">
+          <p>The central question: <strong>Is any given survey response from an attentive human — or a bot, AI agent, or distracted respondent gaming the system?</strong></p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <p style="color:var(--text-secondary)">Researchers need empirical evidence — not gut feeling — to know whether online data is trustworthy, and what to do about it.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 3: THE STUDY -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide layout-split" id="slide-3">
+    <div class="slide-text">
+      <p class="label">The Study</p>
+      <h2>One survey instrument, <span class="text-cyan">six respondent sources</span></h2>
+      <p>The researchers ran the same survey across radically different populations — to build an empirical map of data quality.</p>
+      <div class="anim-step">
+        <div class="highlight-box green">
+          <p><strong>Lab (Gold Standard)</strong> — 314 UC San Diego students, in-person, no LLM use allowed</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="highlight-box orange">
+          <p><strong>AI Agents (Adversarial Baseline)</strong> — 240 submissions from ChatGPT Agent, Perplexity Comet, Claude in Chrome, and BrowserUse</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="highlight-box">
+          <p><strong>4 Online Platforms</strong> — ~3,000 U.S. participants across Prolific, MTurk, Bilendi, and Moblab</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <p style="color:var(--text-dim); font-size:0.9em">The survey included a dictator game (split $10), an open-ended question explaining the decision, attention checks, and demographic questions.</p>
+      </div>
+    </div>
+    <div class="slide-visual">
+      <div class="diagram-container">
+        <svg viewBox="0 0 500 420" font-family="Inter, sans-serif">
+          <defs>
+            <marker id="arr-s" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+              <polygon points="0 0, 10 3.5, 0 7" fill="#00d4ff"/>
+            </marker>
+          </defs>
+
+          <!-- Survey box center -->
+          <rect x="170" y="170" width="160" height="70" rx="10" fill="#0a1040" stroke="#00d4ff" stroke-width="2"/>
+          <text x="250" y="200" text-anchor="middle" fill="#00d4ff" font-size="13" font-weight="bold">Same Survey</text>
+          <text x="250" y="220" text-anchor="middle" fill="#b0b8d0" font-size="11">Dictator game + checks</text>
+
+          <!-- Lab -->
+          <rect x="20" y="20" width="130" height="55" rx="8" fill="#0a1a10" stroke="#00e676" stroke-width="1.5"/>
+          <text x="85" y="44" text-anchor="middle" fill="#00e676" font-size="12" font-weight="bold">Lab</text>
+          <text x="85" y="62" text-anchor="middle" fill="#b0b8d0" font-size="10">314 UCSD students</text>
+          <line x1="150" y1="55" x2="188" y2="175" stroke="#00e676" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+          <!-- AI Agents -->
+          <rect x="350" y="20" width="130" height="55" rx="8" fill="#1a0808" stroke="#ff5252" stroke-width="1.5"/>
+          <text x="415" y="44" text-anchor="middle" fill="#ff5252" font-size="12" font-weight="bold">AI Agents</text>
+          <text x="415" y="62" text-anchor="middle" fill="#b0b8d0" font-size="10">240 bot submissions</text>
+          <line x1="350" y1="55" x2="312" y2="175" stroke="#ff5252" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+          <!-- Prolific -->
+          <rect x="20" y="200" width="120" height="55" rx="8" fill="#0a1020" stroke="#00d4ff" stroke-width="1.5"/>
+          <text x="80" y="224" text-anchor="middle" fill="#00d4ff" font-size="12" font-weight="bold">Prolific</text>
+          <text x="80" y="242" text-anchor="middle" fill="#b0b8d0" font-size="10">~1,200 participants</text>
+          <line x1="140" y1="227" x2="170" y2="210" stroke="#00d4ff" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+          <!-- MTurk -->
+          <rect x="20" y="340" width="120" height="55" rx="8" fill="#1a1000" stroke="#ffd740" stroke-width="1.5"/>
+          <text x="80" y="364" text-anchor="middle" fill="#ffd740" font-size="12" font-weight="bold">MTurk</text>
+          <text x="80" y="382" text-anchor="middle" fill="#b0b8d0" font-size="10">881 participants</text>
+          <line x1="140" y1="367" x2="170" y2="240" stroke="#ffd740" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+          <!-- Bilendi -->
+          <rect x="360" y="200" width="120" height="55" rx="8" fill="#100a1a" stroke="#b388ff" stroke-width="1.5"/>
+          <text x="420" y="224" text-anchor="middle" fill="#b388ff" font-size="12" font-weight="bold">Bilendi</text>
+          <text x="420" y="242" text-anchor="middle" fill="#b0b8d0" font-size="10">~510 participants</text>
+          <line x1="360" y1="227" x2="330" y2="210" stroke="#b388ff" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+          <!-- Moblab -->
+          <rect x="360" y="340" width="120" height="55" rx="8" fill="#0a1018" stroke="#ff6b35" stroke-width="1.5"/>
+          <text x="420" y="364" text-anchor="middle" fill="#ff6b35" font-size="12" font-weight="bold">Moblab</text>
+          <text x="420" y="382" text-anchor="middle" fill="#b0b8d0" font-size="10">~413 participants</text>
+          <line x1="360" y1="367" x2="330" y2="240" stroke="#ff6b35" stroke-width="1.5" stroke-dasharray="4,3"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 4: SECTION BREAK — THE CHECKS -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide section-transition layout-center" id="slide-4">
+    <div class="slide-content">
+      <p class="label">The Method</p>
+      <h2 class="gradient-text">5 Data Quality Checks</h2>
+      <p>Simple, reusable, designed to catch AI agents, inattentive humans, and fraudulent accounts — without over-excluding real respondents.</p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 5: THE 5 CHECKS -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide layout-split" id="slide-5">
+    <div class="slide-text">
+      <p class="label">Data Quality Checks</p>
+      <h2>Five checks, each targeting a <span class="text-cyan">different failure mode</span></h2>
+      <p>No single check catches everything. The combination is what works.</p>
+      <div class="anim-step">
+        <div class="highlight-box">
+          <p><strong>1. Classic Attention Check</strong> — "Select the option furthest to the left/right" on a Likert scale. Catches inattentive humans — but AI agents pass this 99% of the time.</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="highlight-box green">
+          <p><strong>2. Video Attention Check</strong> — Watch a short video, type the 4 numbers shown sequentially. Only 17% of AI agents pass. 97%+ of humans pass.</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="highlight-box orange">
+          <p><strong>3. Typed Text</strong> — Did the respondent actually type the open-text response? Detects copy-paste, LLM injection, and automated text insertion. Only 45% of AI agents pass.</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="highlight-box pink">
+          <p><strong>4. Typed with Typical Speed</strong> — Median keystroke interval &gt;75ms. Flags ultra-fast (automated) text entry. Only 8% of AI agents pass vs 97% of lab participants.</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="highlight-box purple">
+          <p><strong>5. Unique IP Address</strong> — Each response must come from a unique IP. Catches account fraud and duplicate submissions.</p>
+        </div>
+      </div>
+    </div>
+    <div class="slide-visual">
+      <div class="diagram-container">
+        <svg viewBox="0 0 480 440" font-family="Inter, sans-serif">
+          <!-- Title -->
+          <text x="240" y="28" text-anchor="middle" fill="#b0b8d0" font-size="13" font-weight="bold">AI Agent pass rates per check</text>
+          <text x="240" y="46" text-anchor="middle" fill="#6b7394" font-size="11">(vs 97%+ for lab humans on all checks)</text>
+
+          <!-- Check labels & bars (horizontal bar chart) -->
+          <!-- Bar height area: y=70 to y=410 -->
+          <!-- 5 bars, each ~60px tall with 14px gap -->
+
+          <!-- Classic Check — AI: 99% -->
+          <text x="155" y="90" text-anchor="end" fill="#b0b8d0" font-size="11">Classic check</text>
+          <rect x="160" y="74" width="285" height="28" rx="4" fill="#ff5252" opacity="0.85"/>
+          <text x="455" y="93" fill="#ff5252" font-size="12" font-weight="bold">99%</text>
+          <text x="164" y="93" fill="#fff" font-size="11" font-weight="bold">AI passes — useless for detecting bots</text>
+
+          <!-- Video Check — AI: 17% -->
+          <text x="155" y="148" text-anchor="end" fill="#b0b8d0" font-size="11">Video check</text>
+          <rect x="160" y="132" width="49" height="28" rx="4" fill="#00e676" opacity="0.9"/>
+          <text x="215" y="151" fill="#00e676" font-size="12" font-weight="bold">17%</text>
+
+          <!-- Typed Text — AI: 45% -->
+          <text x="155" y="206" text-anchor="end" fill="#b0b8d0" font-size="11">Typed text</text>
+          <rect x="160" y="190" width="129" height="28" rx="4" fill="#ff6b35" opacity="0.85"/>
+          <text x="295" y="209" fill="#ff6b35" font-size="12" font-weight="bold">45%</text>
+
+          <!-- Typical Speed — AI: 8% -->
+          <text x="155" y="264" text-anchor="end" fill="#b0b8d0" font-size="11">Typing speed</text>
+          <rect x="160" y="248" width="23" height="28" rx="4" fill="#ff4081" opacity="0.9"/>
+          <text x="189" y="267" fill="#ff4081" font-size="12" font-weight="bold">8%</text>
+
+          <!-- ALL 5 checks — AI: 0% -->
+          <text x="155" y="330" text-anchor="end" fill="#ffffff" font-size="12" font-weight="bold">All 5 checks</text>
+          <rect x="160" y="314" width="3" height="28" rx="2" fill="#6b7394"/>
+          <text x="170" y="333" fill="#6b7394" font-size="12" font-weight="bold">0%</text>
+          <text x="200" y="333" fill="#00e676" font-size="11">← no AI agent passes all</text>
+
+          <!-- axis -->
+          <line x1="160" y1="360" x2="450" y2="360" stroke="#334" stroke-width="1.5"/>
+          <text x="160" y="378" fill="#6b7394" font-size="10" text-anchor="middle">0%</text>
+          <text x="305" y="378" fill="#6b7394" font-size="10" text-anchor="middle">50%</text>
+          <text x="450" y="378" fill="#6b7394" font-size="10" text-anchor="middle">100%</text>
+
+          <!-- Legend note -->
+          <text x="240" y="415" text-anchor="middle" fill="#6b7394" font-size="10">Bar width = fraction of AI agents that pass each check</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 6: PLATFORM RESULTS (1ST STAGE) -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide layout-split" id="slide-6">
+    <div class="slide-text">
+      <p class="label">Baseline Results</p>
+      <h2>Platform quality varies <span class="text-orange">dramatically</span></h2>
+      <p>The same survey, the same checks — but the share of respondents passing all five checks differs by a factor of <strong>10×</strong> across platforms.</p>
+      <div class="anim-step">
+        <div class="highlight-box green">
+          <p><strong>Prolific: 90%</strong> pass all checks in the first stage — close to the lab benchmark of 80%.</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="highlight-box">
+          <p><strong>Bilendi: 73% · Moblab: 55%</strong> — moderate quality, large room for improvement with screening.</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="highlight-box orange">
+          <p><strong>MTurk: only 9%</strong> pass all checks. The platform has severely degraded. Only 79 of 881 respondents qualify as high-quality.</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="key-insight">
+          <p>AI agent pass rate: <strong>0%</strong>. The five checks successfully eliminate all 240 AI agent submissions.</p>
+        </div>
+      </div>
+    </div>
+    <div class="slide-visual">
+      <div class="diagram-container">
+        <svg viewBox="0 0 500 400" font-family="Inter, sans-serif">
+          <defs>
+            <marker id="arr-ax" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill="#6b7394"/>
+            </marker>
+          </defs>
+
+          <text x="250" y="28" text-anchor="middle" fill="#b0b8d0" font-size="13" font-weight="bold">% Passing All 5 Quality Checks (Baseline)</text>
+
+          <!-- Y axis -->
+          <line x1="60" y1="340" x2="60" y2="40" stroke="#334" stroke-width="1.5" marker-end="url(#arr-ax)"/>
+          <text x="55" y="344" fill="#6b7394" font-size="10" text-anchor="end">0%</text>
+          <text x="55" y="230" fill="#6b7394" font-size="10" text-anchor="end">50%</text>
+          <text x="55" y="120" fill="#6b7394" font-size="10" text-anchor="end">100%</text>
+          <line x1="56" y1="230" x2="60" y2="230" stroke="#334" stroke-width="1"/>
+          <line x1="56" y1="120" fill="#334" stroke="#334" stroke-width="1" x2="60"/>
+
+          <!-- X axis -->
+          <line x1="60" y1="340" x2="490" y2="340" stroke="#334" stroke-width="1.5"/>
+
+          <!-- Bars: scale — 100% = 220px height, 0% = 340, 100%=120 -->
+          <!-- AI: 0% -->
+          <rect x="75" y="339" width="50" height="1" rx="2" fill="#ff5252" opacity="0.6"/>
+          <text x="100" y="326" text-anchor="middle" fill="#ff5252" font-size="11" font-weight="bold">0%</text>
+          <text x="100" y="358" text-anchor="middle" fill="#6b7394" font-size="10">AI</text>
+
+          <!-- Lab: 80% -->
+          <rect x="145" y="164" width="50" height="176" rx="3" fill="#00e676" opacity="0.8"/>
+          <text x="170" y="152" text-anchor="middle" fill="#00e676" font-size="12" font-weight="bold">80%</text>
+          <text x="170" y="358" text-anchor="middle" fill="#6b7394" font-size="10">Lab</text>
+
+          <!-- MTurk: 9% -->
+          <rect x="215" y="320" width="50" height="20" rx="3" fill="#ffd740" opacity="0.8"/>
+          <text x="240" y="308" text-anchor="middle" fill="#ffd740" font-size="12" font-weight="bold">9%</text>
+          <text x="240" y="358" text-anchor="middle" fill="#6b7394" font-size="10">MTurk</text>
+
+          <!-- Moblab: 55% -->
+          <rect x="285" y="219" width="50" height="121" rx="3" fill="#ff6b35" opacity="0.8"/>
+          <text x="310" y="207" text-anchor="middle" fill="#ff6b35" font-size="12" font-weight="bold">55%</text>
+          <text x="310" y="358" text-anchor="middle" fill="#6b7394" font-size="10">Moblab</text>
+
+          <!-- Bilendi: 73% -->
+          <rect x="355" y="180" width="50" height="160" rx="3" fill="#b388ff" opacity="0.8"/>
+          <text x="380" y="168" text-anchor="middle" fill="#b388ff" font-size="12" font-weight="bold">73%</text>
+          <text x="380" y="358" text-anchor="middle" fill="#6b7394" font-size="10">Bilendi</text>
+
+          <!-- Prolific: 90% -->
+          <rect x="425" y="142" width="50" height="198" rx="3" fill="#00d4ff" opacity="0.9"/>
+          <text x="450" y="130" text-anchor="middle" fill="#00d4ff" font-size="12" font-weight="bold">90%</text>
+          <text x="450" y="358" text-anchor="middle" fill="#6b7394" font-size="10">Prolific</text>
+
+          <!-- Lab benchmark line -->
+          <line x1="60" y1="164" x2="490" y2="164" stroke="#00e676" stroke-width="1" stroke-dasharray="5,4" opacity="0.4"/>
+          <text x="492" y="168" fill="#00e676" font-size="9" opacity="0.6">Lab</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 7: WHAT CATCHES WHAT -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide layout-center" id="slide-7">
+    <div class="slide-content">
+      <p class="label">Key Insight</p>
+      <h2>Different checks catch <span class="text-cyan">different problems</span> — no single check is enough</h2>
+      <div class="anim-step">
+        <div class="card-row">
+          <div class="card">
+            <p class="label" style="color:var(--accent-green)">Catches AI Agents</p>
+            <p><strong>Video check</strong> (only 17% pass) and <strong>typing speed</strong> (only 8% pass) are the primary AI detectors</p>
+          </div>
+          <div class="card">
+            <p class="label" style="color:var(--accent-orange)">Catches Inattentive Humans</p>
+            <p><strong>Classic attention checks</strong> catch humans who race through surveys — but AI agents pass these 99% of the time</p>
+          </div>
+          <div class="card">
+            <p class="label" style="color:var(--accent-purple)">Catches Account Fraud</p>
+            <p><strong>Unique IP check</strong> — 21% of MTurk responses share duplicate IPs, consistent with account farming</p>
+          </div>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="highlight-box orange">
+          <p>Behavioral data alone <strong>cannot</strong> detect AI agents. AI agents make similar dictator game decisions (60% give $5, vs 71% of lab participants), and their demographics look human too.</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="key-insight">
+          <p>The typing and video checks exploit a current technical limitation of AI agents — they process visual/keystroke information differently than humans. These checks may need to evolve as AI improves.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 8: SECTION BREAK — TWO-STAGE -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide section-transition layout-center" id="slide-8">
+    <div class="slide-content">
+      <p class="label">The Solution</p>
+      <h2 class="gradient-text">The Two-Stage Recruitment Method</h2>
+      <p>Screen first. Research second. Use quality checks to build a pool of verified respondents before running your actual study.</p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 9: TWO-STAGE DIAGRAM -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide layout-split" id="slide-9">
+    <div class="slide-text">
+      <p class="label">Two-Stage Recruitment</p>
+      <h2>Run a short baseline survey first — <span class="text-green">invite only quality respondents</span> for the real study</h2>
+      <p>The approach mirrors field survey methodology: a screener stage before the main instrument.</p>
+      <div class="anim-step">
+        <div class="highlight-box">
+          <p><strong>Stage 1 — Baseline Survey</strong>: Short survey with the 5 quality checks. Broadly recruit from the platform. Identify who passes all checks.</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="highlight-box green">
+          <p><strong>Stage 2 — Main Study</strong>: Only re-invite respondents who passed all Stage 1 checks. Run your actual research instrument on this pre-verified pool.</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="key-insight">
+          <p>This ex-ante screening also limits p-hacking opportunities, since the quality pool is defined before the main data collection begins.</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <p style="color:var(--text-dim); font-size:0.9em">The checks in Stage 1 are broad and reusable across most studies with minimal modification — the open-text question can be added to almost any survey.</p>
+      </div>
+    </div>
+    <div class="slide-visual">
+      <div class="diagram-container">
+        <svg viewBox="0 0 480 440" font-family="Inter, sans-serif">
+          <defs>
+            <marker id="arr-tw" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+              <polygon points="0 0, 10 3.5, 0 7" fill="#00d4ff"/>
+            </marker>
+            <marker id="arr-tg" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+              <polygon points="0 0, 10 3.5, 0 7" fill="#00e676"/>
+            </marker>
+            <marker id="arr-tr" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+              <polygon points="0 0, 10 3.5, 0 7" fill="#ff5252"/>
+            </marker>
+          </defs>
+
+          <!-- STAGE 1 -->
+          <rect x="140" y="20" width="200" height="60" rx="10" fill="#0a1040" stroke="#00d4ff" stroke-width="2"/>
+          <text x="240" y="46" text-anchor="middle" fill="#00d4ff" font-size="13" font-weight="bold">Stage 1: Baseline Survey</text>
+          <text x="240" y="66" text-anchor="middle" fill="#b0b8d0" font-size="11">5 quality checks embedded</text>
+
+          <!-- Arrow down to filter -->
+          <line x1="240" y1="84" x2="240" y2="128" stroke="#00d4ff" stroke-width="2" marker-end="url(#arr-tw)"/>
+
+          <!-- Filter diamond -->
+          <polygon points="240,132 300,175 240,218 180,175" fill="#0d1530" stroke="#00d4ff" stroke-width="1.5"/>
+          <text x="240" y="172" text-anchor="middle" fill="#b0b8d0" font-size="11">Pass all</text>
+          <text x="240" y="190" text-anchor="middle" fill="#b0b8d0" font-size="11">5 checks?</text>
+
+          <!-- Yes path — down -->
+          <line x1="240" y1="218" x2="240" y2="265" stroke="#00e676" stroke-width="2" marker-end="url(#arr-tg)"/>
+          <text x="252" y="248" fill="#00e676" font-size="11">YES</text>
+
+          <!-- No path — right to reject -->
+          <line x1="300" y1="175" x2="380" y2="175" stroke="#ff5252" stroke-width="2" marker-end="url(#arr-tr)"/>
+          <text x="318" y="166" fill="#ff5252" font-size="11">NO</text>
+          <rect x="382" y="155" width="80" height="40" rx="6" fill="#1a0808" stroke="#ff5252" stroke-width="1"/>
+          <text x="422" y="178" text-anchor="middle" fill="#ff5252" font-size="10">Excluded</text>
+
+          <!-- STAGE 2 -->
+          <rect x="140" y="268" width="200" height="60" rx="10" fill="#0a1a10" stroke="#00e676" stroke-width="2"/>
+          <text x="240" y="294" text-anchor="middle" fill="#00e676" font-size="13" font-weight="bold">Stage 2: Main Study</text>
+          <text x="240" y="314" text-anchor="middle" fill="#b0b8d0" font-size="11">Pre-verified quality pool only</text>
+
+          <!-- Arrow to outcome -->
+          <line x1="240" y1="332" x2="240" y2="375" stroke="#00e676" stroke-width="2" marker-end="url(#arr-tg)"/>
+
+          <!-- Outcome box -->
+          <rect x="120" y="378" width="240" height="50" rx="8" fill="#101820" stroke="#b0b8d0" stroke-width="1"/>
+          <text x="240" y="399" text-anchor="middle" fill="#ffffff" font-size="12" font-weight="bold">High-quality research data</text>
+          <text x="240" y="418" text-anchor="middle" fill="#00e676" font-size="11">93–95% pass rate across platforms</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 10: TWO-STAGE RESULTS -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide layout-split" id="slide-10">
+    <div class="slide-text">
+      <p class="label">Two-Stage Results</p>
+      <h2>Second-stage quality <span class="text-green">converges to lab-level</span> across platforms</h2>
+      <p>After two-stage recruitment, the share of respondents passing all checks rises sharply on every viable platform.</p>
+      <div class="anim-step">
+        <div class="highlight-box green">
+          <p><strong>Moblab: 55% → 95%</strong> — largest improvement, from moderate to excellent</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="highlight-box">
+          <p><strong>Bilendi: 73% → 93%</strong> — substantial improvement</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="highlight-box">
+          <p><strong>Prolific: 90% → 93%</strong> — already high quality; two-stage confirms and validates it</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="highlight-box orange">
+          <p><strong>MTurk: too degraded to run Stage 2.</strong> Only 79 of 881 participants qualified — insufficient for a main study. The two-stage method revealed this early, saving wasted resources.</p>
+        </div>
+      </div>
+    </div>
+    <div class="slide-visual">
+      <div class="diagram-container">
+        <svg viewBox="0 0 500 400" font-family="Inter, sans-serif">
+          <text x="250" y="26" text-anchor="middle" fill="#b0b8d0" font-size="13" font-weight="bold">Two-Stage Effect on Quality</text>
+
+          <!-- Y axis -->
+          <line x1="60" y1="340" x2="60" y2="40" stroke="#334" stroke-width="1.5"/>
+          <text x="55" y="344" fill="#6b7394" font-size="10" text-anchor="end">0%</text>
+          <text x="55" y="230" fill="#6b7394" font-size="10" text-anchor="end">50%</text>
+          <text x="55" y="120" fill="#6b7394" font-size="10" text-anchor="end">100%</text>
+
+          <!-- X axis -->
+          <line x1="60" y1="340" x2="490" y2="340" stroke="#334" stroke-width="1.5"/>
+
+          <!-- Legend -->
+          <rect x="320" y="38" width="14" height="14" rx="2" fill="#6b7394" opacity="0.7"/>
+          <text x="338" y="50" fill="#b0b8d0" font-size="10">1st Stage</text>
+          <rect x="390" y="38" width="14" height="14" rx="2" fill="#ff9cbc" opacity="0.7"/>
+          <text x="408" y="50" fill="#b0b8d0" font-size="10">2nd Stage</text>
+
+          <!-- MTurk: 9% only, no 2nd stage -->
+          <rect x="75" y="320" width="38" height="20" rx="2" fill="#6b7394" opacity="0.7"/>
+          <text x="94" y="310" text-anchor="middle" fill="#ffd740" font-size="11" font-weight="bold">9%</text>
+          <text x="94" y="358" text-anchor="middle" fill="#6b7394" font-size="10">MTurk</text>
+          <text x="94" y="372" text-anchor="middle" fill="#ff5252" font-size="9">No 2nd stage</text>
+
+          <!-- Moblab: 55% → 95% -->
+          <rect x="155" y="219" width="32" height="121" rx="2" fill="#6b7394" opacity="0.7"/>
+          <rect x="191" y="131" width="32" height="209" rx="2" fill="#ff9cbc" opacity="0.8"/>
+          <text x="171" y="207" text-anchor="middle" fill="#b0b8d0" font-size="10">55%</text>
+          <text x="207" y="119" text-anchor="middle" fill="#00e676" font-size="12" font-weight="bold">95%</text>
+          <text x="183" y="358" text-anchor="middle" fill="#6b7394" font-size="10">Moblab</text>
+
+          <!-- Bilendi: 73% → 93% -->
+          <rect x="265" y="180" width="32" height="160" rx="2" fill="#6b7394" opacity="0.7"/>
+          <rect x="301" y="136" width="32" height="204" rx="2" fill="#ff9cbc" opacity="0.8"/>
+          <text x="281" y="168" text-anchor="middle" fill="#b0b8d0" font-size="10">73%</text>
+          <text x="317" y="124" text-anchor="middle" fill="#00e676" font-size="12" font-weight="bold">93%</text>
+          <text x="293" y="358" text-anchor="middle" fill="#6b7394" font-size="10">Bilendi</text>
+
+          <!-- Prolific: 90% → 93% -->
+          <rect x="375" y="142" width="32" height="198" rx="2" fill="#6b7394" opacity="0.7"/>
+          <rect x="411" y="136" width="32" height="204" rx="2" fill="#ff9cbc" opacity="0.8"/>
+          <text x="391" y="130" text-anchor="middle" fill="#b0b8d0" font-size="10">90%</text>
+          <text x="427" y="124" text-anchor="middle" fill="#00e676" font-size="12" font-weight="bold">93%</text>
+          <text x="403" y="358" text-anchor="middle" fill="#6b7394" font-size="10">Prolific</text>
+
+          <!-- Lab benchmark -->
+          <line x1="60" y1="164" x2="490" y2="164" stroke="#00e676" stroke-width="1" stroke-dasharray="5,4" opacity="0.35"/>
+          <text x="492" y="168" fill="#00e676" font-size="9" opacity="0.5">80% Lab</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 11: CONCLUSION -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide layout-center" id="slide-11">
+    <div class="slide-content">
+      <p class="label">Takeaways</p>
+      <h2>High-quality online data is still <span class="text-green">achievable</span> — if you screen for it</h2>
+      <div class="anim-step">
+        <div class="card-row">
+          <div class="card">
+            <p class="label" style="color:var(--accent-cyan)">The good news</p>
+            <p>Combining 5 simple quality checks with a two-stage recruitment method produces lab-comparable data quality on Prolific, Bilendi, and Moblab</p>
+          </div>
+          <div class="card">
+            <p class="label" style="color:var(--accent-orange)">The warning</p>
+            <p>Platform choice matters enormously. MTurk is severely degraded — only 9% pass quality checks. Two-stage method can't fix insufficient supply of quality respondents</p>
+          </div>
+          <div class="card">
+            <p class="label" style="color:var(--accent-purple)">The arms race</p>
+            <p>AI agents will improve. Today's video + typing checks exploit current AI limitations. Checks must evolve. The two-stage framework can accommodate new checks as they emerge</p>
+          </div>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="key-insight">
+          <p>The practical prescription: run a short baseline survey with these 5 checks first. If enough respondents pass, run your main study on that pool. If not (like MTurk), you've saved time and money before wasting it on bad data.</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <p class="citation">Çelebi, Exley, Harrs, Kivimaki, Serra-Garcia &amp; Yusof — "Mission Possible: The Collection of High-Quality Online Data" — CESifo Working Paper 12535, March 2026</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- UI CHROME -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <div class="progress-bar"></div>
+  <div class="slide-counter"></div>
+  <div class="step-indicator"></div>
+  <div class="nav-hint">→ arrow to advance &nbsp;·&nbsp; ← to go back &nbsp;·&nbsp; F for fullscreen</div>
+
+</div>
+<script src="js/presentation.js"></script>
+</body>
+</html>

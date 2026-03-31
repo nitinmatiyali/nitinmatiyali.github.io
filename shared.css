@@ -1,0 +1,63 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #ffffff;
+  --text: #111111;
+  --muted: #6b7280;
+  --subtle: #9ca3af;
+  --border: #e5e7eb;
+  --surface: #f9fafb;
+  --tag-bg: #f3f4f6;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 max(2rem, 6vw);
+  height: 56px;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo a { font-weight: 600; font-size: 14px; letter-spacing: -0.2px; text-decoration: none; color: var(--text); }
+.nav-links { display: flex; gap: 2rem; }
+.nav-links a {
+  color: var(--muted); text-decoration: none; font-size: 13px; font-weight: 500;
+  transition: color 0.15s; padding-bottom: 2px;
+}
+.nav-links a:hover { color: var(--text); }
+.nav-links a.active {
+  color: var(--text);
+  border-bottom: 2px solid var(--text);
+}
+
+main { max-width: 680px; margin: 0 auto; padding: 0 max(1.5rem, 5vw); }
+
+.page-header { padding: 5.5rem 0 2.5rem; border-bottom: 1px solid var(--border); margin-bottom: 3rem; }
+.page-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--subtle); margin-bottom: 0.5rem; }
+.page-title { font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 700; letter-spacing: -0.025em; line-height: 1.2; }
+.page-desc { color: var(--muted); font-size: 15px; margin-top: 0.75rem; line-height: 1.7; max-width: 520px; }
+
+hr { border: none; border-top: 1px solid var(--border); margin-top: 4rem; }
+
+footer {
+  text-align: center; padding: 3rem 0 2.5rem;
+  color: var(--subtle); font-size: 12px;
+  margin-top: 4rem; border-top: 1px solid var(--border);
+}
+
+@media (max-width: 540px) {
+  nav .nav-links { gap: 1.25rem; }
+}

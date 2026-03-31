@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Twins as Funhouse Mirrors — Paper #8</title>
+  <style>
+/* ============================================
+   Presentation Styles — inlined
+   ============================================ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg-primary: #0a0e27;
+  --bg-secondary: #111638;
+  --bg-card: #161b40;
+  --text-primary: #ffffff;
+  --text-secondary: #b0b8d0;
+  --text-dim: #6b7394;
+  --accent-cyan: #00d4ff;
+  --accent-orange: #ff6b35;
+  --accent-green: #00e676;
+  --accent-pink: #ff4081;
+  --accent-purple: #b388ff;
+  --accent-yellow: #ffd740;
+  --accent-red: #ff5252;
+  --font-heading: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-body: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
+  --slide-padding: clamp(30px, 5vw, 80px);
+  --transition-speed: 0.5s;
+}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg-primary); color: var(--text-primary); font-family: var(--font-body); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+.presentation { width: 100vw; height: 100vh; position: relative; overflow: hidden; }
+.slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; justify-content: flex-start; padding: var(--slide-padding); background: var(--bg-primary); overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth; }
+.slide.active { display: flex; }
+.slide.layout-center { align-items: center; text-align: center; }
+.slide.layout-center .slide-content { max-width: 1100px; margin-top: auto; margin-bottom: auto; }
+.slide.layout-split { flex-direction: row; align-items: stretch; gap: clamp(20px, 4vw, 60px); }
+.slide.layout-split .slide-text { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; padding-top: clamp(16px, 3vh, 40px); padding-bottom: clamp(16px, 3vh, 40px); }
+.slide.layout-split .slide-visual { flex: 1; display: flex; align-items: center; justify-content: center; min-width: 0; position: sticky; top: 0; height: 100vh; max-height: 100vh; }
+.slide-content { width: 100%; max-width: 1400px; margin: 0 auto; }
+h1 { font-family: var(--font-heading); font-size: clamp(36px, 5vw, 72px); font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: clamp(12px, 2vw, 24px); }
+h2 { font-family: var(--font-heading); font-size: clamp(28px, 3.5vw, 56px); font-weight: 700; line-height: 1.15; letter-spacing: -0.01em; margin-bottom: clamp(10px, 1.5vw, 20px); }
+h3 { font-family: var(--font-heading); font-size: clamp(22px, 2.8vw, 40px); font-weight: 600; line-height: 1.2; margin-bottom: clamp(8px, 1.2vw, 16px); }
+p, li { font-size: clamp(20px, 2.2vw, 34px); line-height: 1.5; color: var(--text-secondary); margin-bottom: clamp(6px, 1vw, 14px); }
+.subtitle { font-size: clamp(18px, 2vw, 30px); color: var(--text-dim); font-weight: 300; }
+.small-text { font-size: clamp(14px, 1.5vw, 22px); color: var(--text-dim); }
+.label { font-size: clamp(12px, 1.2vw, 18px); text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-dim); font-weight: 600; margin-bottom: clamp(4px, 0.5vw, 8px); }
+.text-cyan { color: var(--accent-cyan); }
+.text-orange { color: var(--accent-orange); }
+.text-green { color: var(--accent-green); }
+.text-pink { color: var(--accent-pink); }
+.text-purple { color: var(--accent-purple); }
+.text-yellow { color: var(--accent-yellow); }
+blockquote { position: relative; border: none; padding: clamp(20px, 3vw, 40px) clamp(24px, 3.5vw, 48px); margin: clamp(14px, 2vw, 28px) 0; background: linear-gradient(135deg, rgba(0, 212, 255, 0.06) 0%, rgba(179, 136, 255, 0.06) 100%); border-radius: 12px; }
+blockquote::before { content: '\201C'; position: absolute; top: clamp(4px, 0.8vw, 10px); left: clamp(10px, 1.5vw, 20px); font-size: clamp(40px, 4vw, 64px); font-family: Georgia, serif; color: var(--accent-cyan); opacity: 0.4; line-height: 1; }
+blockquote p { font-style: italic; font-size: clamp(18px, 2vw, 30px); color: var(--text-primary); margin-bottom: 8px; }
+blockquote cite, blockquote .attribution { font-size: clamp(14px, 1.4vw, 22px); color: var(--accent-cyan); font-style: normal; font-weight: 500; opacity: 0.8; }
+ul, ol { list-style: none; padding: 0; }
+li { position: relative; padding-left: clamp(20px, 2.5vw, 36px); }
+li::before { content: ''; position: absolute; left: 0; top: clamp(8px, 1vw, 14px); width: clamp(6px, 0.8vw, 10px); height: clamp(6px, 0.8vw, 10px); background: var(--accent-cyan); border-radius: 50%; }
+.anim-step { opacity: 0; transform: translateY(8px); transition: opacity var(--transition-speed) ease, transform var(--transition-speed) ease; pointer-events: none; }
+.anim-step.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+svg .anim-step { transform: none; }
+svg .anim-step.visible { transform: none; }
+.diagram-container { width: 100%; max-width: 900px; margin: clamp(10px, 2vw, 24px) auto; }
+.diagram-container svg { width: 100%; height: auto; display: block; }
+.card { background: var(--bg-card); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: clamp(16px, 2vw, 28px); }
+.card-row { display: flex; gap: clamp(12px, 2vw, 24px); flex-wrap: wrap; }
+.card-row .card { flex: 1; min-width: 200px; }
+.highlight-box { background: rgba(0,212,255,0.08); border: 1px solid rgba(0,212,255,0.25); border-radius: 8px; padding: clamp(12px, 1.5vw, 20px); margin: clamp(6px, 1vw, 12px) 0; }
+.highlight-box.orange { background: rgba(255,107,53,0.08); border-color: rgba(255,107,53,0.25); }
+.highlight-box.green { background: rgba(0,230,118,0.08); border-color: rgba(0,230,118,0.25); }
+.highlight-box.purple { background: rgba(179,136,255,0.08); border-color: rgba(179,136,255,0.25); }
+code { font-family: var(--font-mono); font-size: 0.85em; background: rgba(0,212,255,0.1); padding: 2px 8px; border-radius: 4px; color: var(--accent-cyan); }
+.formula { font-family: var(--font-mono); font-size: clamp(18px, 2vw, 30px); color: var(--accent-cyan); text-align: center; padding: clamp(8px, 1vw, 16px); background: rgba(0,212,255,0.05); border-radius: 8px; margin: clamp(8px, 1.2vw, 16px) 0; }
+.slide-table { width: 100%; border-collapse: collapse; margin: clamp(10px, 1.5vw, 20px) 0; }
+.slide-table th, .slide-table td { padding: clamp(8px, 1vw, 16px) clamp(12px, 1.5vw, 20px); text-align: left; font-size: clamp(16px, 1.8vw, 26px); border-bottom: 1px solid rgba(255,255,255,0.08); }
+.slide-table th { color: var(--accent-cyan); font-weight: 600; font-size: clamp(14px, 1.5vw, 22px); text-transform: uppercase; letter-spacing: 0.1em; }
+.slide-table td { color: var(--text-secondary); }
+.progress-bar { position: fixed; bottom: 0; left: 0; height: 3px; background: var(--accent-cyan); transition: width 0.3s ease; z-index: 100; }
+.slide-counter { position: fixed; bottom: clamp(8px,1.2vw,16px); right: clamp(12px,2vw,24px); font-size: clamp(12px,1.2vw,18px); color: var(--text-dim); font-family: var(--font-mono); z-index: 100; }
+.step-indicator { position: fixed; bottom: clamp(8px,1.2vw,16px); left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 100; }
+.step-indicator .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-dim); transition: background 0.3s ease; }
+.step-indicator .dot.active { background: var(--accent-cyan); }
+.slide.title-slide { background: radial-gradient(ellipse at 50% 50%, #111638 0%, #0a0e27 70%); justify-content: center; }
+.title-slide h1 { font-size: clamp(40px,6vw,84px); background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.slide.section-transition { background: radial-gradient(ellipse at 50% 50%, var(--bg-secondary) 0%, var(--bg-primary) 70%); justify-content: center; }
+.section-transition h2 { font-size: clamp(32px,4.5vw,64px); }
+.key-insight { display: flex; align-items: flex-start; gap: clamp(8px,1.2vw,16px); padding: clamp(10px,1.5vw,20px); background: rgba(0,212,255,0.06); border-left: 3px solid var(--accent-cyan); border-radius: 0 8px 8px 0; margin: clamp(8px,1.2vw,16px) 0; }
+.key-insight p { color: var(--text-primary); font-weight: 500; margin-bottom: 0; }
+.citation { font-size: clamp(11px,1.1vw,16px); color: var(--text-dim); font-style: italic; margin-top: clamp(4px,0.6vw,8px); }
+@media (max-width: 1024px) { .slide.layout-split { flex-direction: column; align-items: center; } .slide.layout-split .slide-text { width: 100%; } .slide.layout-split .slide-visual { position: relative; height: auto; max-height: 50vh; width: 100%; top: auto; } }
+@media (max-width: 768px) { :root { --slide-padding: 20px; } }
+.presentation:-webkit-full-screen { width: 100vw; height: 100vh; }
+.presentation:-moz-full-screen { width: 100vw; height: 100vh; }
+.presentation:fullscreen { width: 100vw; height: 100vh; }
+.nav-hint { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.7); color: var(--text-secondary); padding: 10px 24px; border-radius: 20px; font-size: 14px; z-index: 200; transition: opacity 1s ease; }
+.nav-hint.hidden { opacity: 0; pointer-events: none; }
+.gradient-text { background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(16px, 2.5vw, 36px); align-items: start; }
+@media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
+.big-number { font-size: clamp(48px, 7vw, 96px); font-weight: 800; font-family: var(--font-heading); line-height: 1; }
+  </style>
+  <style>
+    /* overflow guard */
+    .slide-content, .slide-text { overflow: hidden; max-height: 100%; }
+    .slide.layout-center .slide-content { max-height: calc(100vh - var(--slide-padding) * 2); overflow: hidden; }
+    .slide.layout-split .slide-text { justify-content: flex-start; overflow-y: auto; max-height: 100vh; }
+  </style>
+</head>
+<body>
+<div style="position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);border-bottom:1px solid #e5e7eb;height:48px;display:flex;align-items:center;padding:0 max(1.5rem,4vw);font-family:Inter,system-ui,sans-serif;gap:0;"><a href="/projects/" style="font-size:13px;font-weight:500;color:#6b7280;text-decoration:none;display:flex;align-items:center;gap:6px;">&#8592; Projects</a><span style="color:#e5e7eb;margin:0 10px;">|</span><a href="/" style="font-size:13px;font-weight:500;color:#6b7280;text-decoration:none;">Nitin Matiyali</a></div>
+
+<div class="presentation">
+
+<!-- ============================================================ SLIDE 1 — Title ============================================================ -->
+<section class="slide title-slide layout-center active" id="slide-1">
+  <div class="slide-content">
+    <p class="label" style="letter-spacing:0.2em; margin-bottom:16px;">Paper #8 · Peng, Gui, Toubia et al. · Columbia · 2026</p>
+    <h1>Digital Twins as<br>Funhouse Mirrors</h1>
+    <p class="subtitle" style="margin-top:12px;">Five Key Distortions in LLM-Based Human Simulations</p>
+    <div class="anim-step" style="margin-top:36px;">
+      <p style="font-size:clamp(16px,1.8vw,26px); color:var(--text-dim);">
+        19 pre-registered studies. 164 outcomes. 1,784 real people matched to their digital twins.<br>
+        The verdict: twins look human — but systematically distort what it means to be one.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ SLIDE 2 — The Promise ============================================================ -->
+<section class="slide layout-center" id="slide-2">
+  <div class="slide-content">
+    <p class="label">The Promise</p>
+    <h2>Digital Twins Sound Revolutionary</h2>
+    <div class="anim-step">
+      <p>A <span class="text-cyan">digital twin</span>: an LLM loaded with everything known about a specific person — asked to answer as them. The pitch: surveys without recruiting people, experiments without ethical constraints, panels at zero cost.</p>
+    </div>
+    <div class="anim-step">
+      <p style="color:var(--text-dim); font-size:clamp(13px,1.4vw,20px);">Startups valued at ~$1B have been built on this premise. Fortune 500 companies are deploying it today.</p>
+    </div>
+    <div class="anim-step">
+      <div class="key-insight">
+        <p>But has anyone rigorously tested whether digital twins actually work?</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ SLIDE 3 — The Gap ============================================================ -->
+<section class="slide layout-center" id="slide-3">
+  <div class="slide-content">
+    <p class="label">The Problem</p>
+    <h2>Prior Evidence Was Narrow</h2>
+    <div class="anim-step">
+      <p>Encouraging results from early studies reported <span class="text-green">72–88% relative accuracy</span>.</p>
+    </div>
+    <div class="anim-step">
+      <p>But those studies used <span class="text-orange">known, previously published experimental tasks</span> — likely already in the LLM's training data — and measured <span class="text-orange">group-average accuracy</span>, not whether each twin correctly matched its specific human.</p>
+    </div>
+    <div class="anim-step">
+      <div class="highlight-box orange">
+        <p style="margin:0;">This is the first study to test twins on novel questions, across many domains, with individual-level matching.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ SLIDE 4 — Study Design ============================================================ -->
+<section class="slide layout-split" id="slide-4">
+  <div class="slide-text">
+    <p class="label">The Mega-Study</p>
+    <h2>The Biggest Twin Test Ever</h2>
+    <div class="anim-step">
+      <p><span class="text-cyan">19 pre-registered sub-studies</span> spanning Creativity, Politics, Privacy, Labor Market, Fairness, Behavioral Economics, News Consumption, and Technology Platforms.</p>
+    </div>
+    <div class="anim-step">
+      <div class="highlight-box">
+        <p style="margin:0;"><span class="text-cyan">164 distinct outcomes</span> matched human-to-twin at the individual level — across <span class="text-cyan">1,784 unique U.S. participants</span>, a representative sample, not convenience.</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-visual">
+    <div class="diagram-container">
+      <svg viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg">
+        <rect x="160" y="155" width="180" height="90" rx="10" fill="#161b40" stroke="#00d4ff" stroke-width="2"/>
+        <text x="250" y="193" fill="#00d4ff" font-size="15" text-anchor="middle" font-family="Inter,sans-serif" font-weight="700">19 Pre-registered</text>
+        <text x="250" y="213" fill="#00d4ff" font-size="15" text-anchor="middle" font-family="Inter,sans-serif" font-weight="700">Sub-Studies</text>
+        <text x="250" y="233" fill="#6b7394" font-size="12" text-anchor="middle" font-family="Inter,sans-serif">164 outcomes</text>
+        <g>
+          <rect x="20" y="80" width="110" height="60" rx="8" fill="#161b40" stroke="#00e676" stroke-width="1.5"/>
+          <text x="75" y="106" fill="#00e676" font-size="13" text-anchor="middle" font-family="Inter,sans-serif" font-weight="600">2K Humans</text>
+          <text x="75" y="124" fill="#6b7394" font-size="11" text-anchor="middle" font-family="Inter,sans-serif">Twin-2K-500</text>
+          <line x1="130" y1="110" x2="158" y2="185" stroke="#00e676" stroke-width="1.5" stroke-dasharray="4 3"/>
+        </g>
+        <g>
+          <rect x="20" y="260" width="110" height="60" rx="8" fill="#161b40" stroke="#b388ff" stroke-width="1.5"/>
+          <text x="75" y="286" fill="#b388ff" font-size="13" text-anchor="middle" font-family="Inter,sans-serif" font-weight="600">Digital Twins</text>
+          <text x="75" y="304" fill="#6b7394" font-size="11" text-anchor="middle" font-family="Inter,sans-serif">GPT-4.1 + persona</text>
+          <line x1="130" y1="290" x2="158" y2="220" stroke="#b388ff" stroke-width="1.5" stroke-dasharray="4 3"/>
+        </g>
+        <g>
+          <rect x="370" y="80" width="110" height="60" rx="8" fill="#161b40" stroke="#00e676" stroke-width="1.5"/>
+          <text x="425" y="106" fill="#00e676" font-size="13" text-anchor="middle" font-family="Inter,sans-serif" font-weight="600">Human</text>
+          <text x="425" y="124" fill="#00e676" font-size="13" text-anchor="middle" font-family="Inter,sans-serif">Answers</text>
+          <line x1="342" y1="185" x2="370" y2="110" stroke="#00e676" stroke-width="1.5" stroke-dasharray="4 3"/>
+        </g>
+        <g>
+          <rect x="370" y="260" width="110" height="60" rx="8" fill="#161b40" stroke="#b388ff" stroke-width="1.5"/>
+          <text x="425" y="283" fill="#b388ff" font-size="13" text-anchor="middle" font-family="Inter,sans-serif" font-weight="600">Twin</text>
+          <text x="425" y="301" fill="#b388ff" font-size="13" text-anchor="middle" font-family="Inter,sans-serif">Answers</text>
+          <line x1="342" y1="220" x2="370" y2="290" stroke="#b388ff" stroke-width="1.5" stroke-dasharray="4 3"/>
+        </g>
+        <g>
+          <line x1="425" y1="145" x2="425" y2="258" stroke="#ff6b35" stroke-width="2"/>
+          <polygon points="425,258 420,245 430,245" fill="#ff6b35"/>
+          <polygon points="425,145 420,158 430,158" fill="#ff6b35"/>
+          <text x="448" y="207" fill="#ff6b35" font-size="12" font-family="Inter,sans-serif" font-weight="600">Match</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ SLIDE 5 — How a Twin Is Built ============================================================ -->
+<section class="slide layout-center" id="slide-5">
+  <div class="slide-content">
+    <p class="label">Twin Construction</p>
+    <h2>The "Full Persona" Approach</h2>
+    <div class="anim-step">
+      <p>Each human answered <span class="text-cyan">500+ questions</span> in an extended 145-minute multi-session survey.</p>
+    </div>
+    <div class="anim-step">
+      <div class="two-col" style="margin-top:8px;">
+        <div>
+          <p class="label" style="font-size:11px;">Blueprint data</p>
+          <p style="font-size:clamp(13px,1.4vw,18px);">14 demographic variables</p>
+          <p style="font-size:clamp(13px,1.4vw,18px);">279 personality questions (26 constructs)</p>
+          <p style="font-size:clamp(13px,1.4vw,18px);">85 cognitive ability items</p>
+          <p style="font-size:clamp(13px,1.4vw,18px);">82 economic prefs &amp; heuristics</p>
+        </div>
+        <div>
+          <p class="label" style="font-size:11px;">Method</p>
+          <p style="font-size:clamp(13px,1.4vw,18px);">All ~128,000 characters of profile data loaded into GPT-4.1's memory at once.</p>
+          <p style="font-size:clamp(13px,1.4vw,18px); color:var(--text-dim);">Then: answer this new question as this person.</p>
+        </div>
+      </div>
+    </div>
+    <div class="anim-step" style="margin-top:12px;">
+      <div class="key-insight">
+        <p>This is the best possible digital twin built with today's technology.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ SLIDE 6 — The Headline Result ============================================================ -->
+<section class="slide layout-center" id="slide-6">
+  <div class="slide-content">
+    <p class="label">The Result</p>
+    <h2>Weak Correlation. Modest Accuracy.</h2>
+    <div class="anim-step">
+      <p>Average correlation between twin and human responses across 164 outcomes:</p>
+      <p class="big-number text-orange" style="margin:8px 0;">r = 0.20</p>
+      <p style="color:var(--text-dim); font-size:clamp(13px,1.4vw,20px);">On a scale from 0 (no match at all) to 1.0 (perfect match), 0.20 is weak — roughly the correlation between height and intelligence.</p>
+    </div>
+    <div class="anim-step">
+      <table class="slide-table" style="margin-top:16px;">
+        <thead>
+          <tr><th>Approach</th><th>Accuracy ↑</th><th>Correlation ↑</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="text-cyan">Full Persona</span> (500+ Q's)</td><td>0.748</td><td>0.197</td></tr>
+          <tr><td>Demographics Only</td><td>0.746</td><td>0.145</td></tr>
+          <tr><td>Empty Persona <span style="color:var(--text-dim); font-size:0.8em">(base model, no personal data given)</span></td><td>0.734</td><td>0.080</td></tr>
+          <tr><td style="color:var(--text-dim);">Random responses</td><td style="color:var(--text-dim);">0.629</td><td style="color:var(--text-dim);">0.001</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ SLIDE 7 — The Damning Finding ============================================================ -->
+<section class="slide layout-center" id="slide-7">
+  <div class="slide-content">
+    <p class="label">The Damning Gap</p>
+    <h2>145 Minutes of Data. Zero Extra Accuracy.</h2>
+    <div class="anim-step">
+      <p>Full persona accuracy: <span class="text-cyan">0.748</span></p>
+      <p>Demographics only accuracy: <span class="text-cyan">0.746</span></p>
+    </div>
+    <div class="anim-step">
+      <p>That 0.002 difference is <span class="text-orange">statistically indistinguishable from chance</span> (p = 0.37 — a high p-value means no meaningful difference was detected).</p>
+    </div>
+    <div class="anim-step">
+      <p style="color:var(--text-dim); font-size:clamp(13px,1.4vw,20px);">Loading in 500+ personality and cognition questions barely moves the needle over just knowing someone's age, race, income, and politics.</p>
+    </div>
+    <div class="anim-step">
+      <div class="highlight-box orange">
+        <p style="margin:0;">The twin is mostly using demographic stereotypes — not individual cognition.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ SLIDE 8 — Section Transition ============================================================ -->
+<section class="slide section-transition layout-center" id="slide-8">
+  <div class="slide-content">
+    <p class="label">Five Distortions</p>
+    <h2 class="gradient-text">Why Twins Fail</h2>
+    <p>Performance is modest overall. But the paper goes further — it identifies <em>five systematic ways</em> digital twins distort human behavior.</p>
+    <div class="anim-step">
+      <div class="two-col" style="margin-top:20px;">
+        <div>
+          <p><span class="text-orange">①</span> Stereotyping</p>
+          <p><span class="text-orange">②</span> Insufficient Individuation</p>
+          <p><span class="text-orange">③</span> Representation Bias</p>
+        </div>
+        <div>
+          <p><span class="text-orange">④</span> Ideological Biases</p>
+          <p><span class="text-orange">⑤</span> Hyper-Rationality</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ SLIDE 9 — Distortion 1: Stereotyping ============================================================ -->
+<section class="slide layout-split" id="slide-9">
+  <div class="slide-text">
+    <p class="label">Distortion 1</p>
+    <h2>Stereotyping</h2>
+    <div class="anim-step">
+      <p>Twins over-rely on demographics, ignoring the rich individual-level data. The test: how different are full-persona twins from demographics-only twins?</p>
+    </div>
+    <div class="anim-step">
+      <div class="formula">Mean Absolute Deviation (MAD): full twin vs. demographics-only = 0.132</div>
+      <div class="formula">Mean Absolute Deviation (MAD): full twin vs. real human = 0.252</div>
+      <p style="color:var(--text-dim); font-size:clamp(11px,1.2vw,16px); margin-top:6px;">MAD = the average gap between two sets of answers. A value of 0.252 means the twin's answers were, on average, a quarter of the rating scale away from the real person's.</p>
+    </div>
+    <div class="anim-step">
+      <div class="highlight-box orange">
+        <p style="margin:0;">Twins are <em>closer to their demographic clone</em> than to the real human they're supposed to represent.</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-visual">
+    <div class="diagram-container">
+      <svg viewBox="0 0 500 420" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="250" cy="80" r="40" fill="#161b40" stroke="#00e676" stroke-width="2"/>
+        <text x="250" y="76" fill="#00e676" font-size="14" text-anchor="middle" font-family="Inter,sans-serif" font-weight="700">Real</text>
+        <text x="250" y="96" fill="#00e676" font-size="14" text-anchor="middle" font-family="Inter,sans-serif" font-weight="700">Human</text>
+        <g>
+          <circle cx="100" cy="300" r="38" fill="#161b40" stroke="#00d4ff" stroke-width="2"/>
+          <text x="100" y="292" fill="#00d4ff" font-size="12" text-anchor="middle" font-family="Inter,sans-serif" font-weight="700">Full</text>
+          <text x="100" y="308" fill="#00d4ff" font-size="12" text-anchor="middle" font-family="Inter,sans-serif" font-weight="700">Persona</text>
+          <text x="100" y="324" fill="#00d4ff" font-size="12" text-anchor="middle" font-family="Inter,sans-serif">Twin</text>
+        </g>
+        <g>
+          <circle cx="270" cy="310" r="38" fill="#161b40" stroke="#b388ff" stroke-width="2"/>
+          <text x="270" y="302" fill="#b388ff" font-size="12" text-anchor="middle" font-family="Inter,sans-serif" font-weight="700">Demo</text>
+          <text x="270" y="318" fill="#b388ff" font-size="12" text-anchor="middle" font-family="Inter,sans-serif" font-weight="700">-graphics</text>
+          <text x="270" y="334" fill="#b388ff" font-size="12" text-anchor="middle" font-family="Inter,sans-serif">Twin</text>
+        </g>
+        <g class="anim-step">
+          <line x1="122" y1="267" x2="222" y2="116" stroke="#ff6b35" stroke-width="2.5" stroke-dasharray="6 3"/>
+          <text x="148" y="204" fill="#ff6b35" font-size="13" text-anchor="middle" font-family="Inter,sans-serif" font-weight="600" transform="rotate(-52,148,204)">MAD 0.252 (far)</text>
+          <line x1="138" y1="297" x2="232" y2="304" stroke="#6b7394" stroke-width="2.5"/>
+          <text x="185" y="330" fill="#6b7394" font-size="13" text-anchor="middle" font-family="Inter,sans-serif">MAD 0.132 (close)</text>
+        </g>
+        <g class="anim-step">
+          <rect x="50" y="375" width="400" height="34" rx="6" fill="rgba(255,107,53,0.1)" stroke="rgba(255,107,53,0.3)" stroke-width="1"/>
+          <text x="250" y="397" fill="#ff6b35" font-size="13" text-anchor="middle" font-family="Inter,sans-serif" font-weight="600">Full persona is closer to its demographic clone than to the real human</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ SLIDE 10 — Distortion 2: Insufficient Individuation ============================================================ -->
+<section class="slide layout-split" id="slide-10">
+  <div class="slide-text">
+    <p class="label">Distortion 2</p>
+    <h2>Insufficient Individuation</h2>
+    <div class="anim-step">
+      <p>Twins are <span class="text-orange">too well-behaved</span>. Real humans are widely dispersed in their views.</p>
+    </div>
+    <div class="anim-step">
+      <p>Twin standard deviation (SD — how spread out responses are) &lt; Human SD in <span class="text-orange">154 of 164 outcomes (93.9%).</span></p>
+      <p style="color:var(--text-dim); font-size:clamp(13px,1.4vw,18px);">On average, twins are 37% less spread out than real humans.</p>
+    </div>
+    <div class="anim-step">
+      <div class="highlight-box orange">
+        <p style="margin:0;">Think of the base model as having strong built-in default assumptions. The persona data should override them — but it doesn't. Full-persona twins end up closer to the empty-persona base model than to their real humans.</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-visual">
+    <div class="diagram-container">
+      <svg viewBox="0 0 520 440" xmlns="http://www.w3.org/2000/svg">
+        <!-- Axes -->
+        <line x1="50" y1="360" x2="490" y2="360" stroke="#334" stroke-width="2"/>
+        <line x1="50" y1="40" x2="50" y2="360" stroke="#334" stroke-width="2"/>
+        <!-- Axis labels -->
+        <text x="270" y="400" fill="#6b7394" font-size="13" text-anchor="middle" font-family="Inter,sans-serif">Response value</text>
+        <text x="16" y="220" fill="#6b7394" font-size="13" text-anchor="middle" font-family="Inter,sans-serif" transform="rotate(-90,16,220)">Frequency</text>
+
+        <!-- Human bell curve — wide, green -->
+        <g>
+          <!-- Filled area under human curve -->
+          <path d="
+            M 50,358
+            C 70,357 90,354 110,348
+            C 130,340 150,326 170,306
+            C 190,284 210,254 230,222
+            C 245,198 255,180 270,168
+            C 285,180 295,198 310,222
+            C 330,254 350,284 370,306
+            C 390,326 410,340 430,348
+            C 450,354 470,357 490,358
+            Z
+          " fill="#00e676" fill-opacity="0.07"/>
+          <!-- Human curve outline -->
+          <path d="
+            M 50,358
+            C 70,357 90,354 110,348
+            C 130,340 150,326 170,306
+            C 190,284 210,254 230,222
+            C 245,198 255,180 270,168
+            C 285,180 295,198 310,222
+            C 330,254 350,284 370,306
+            C 390,326 410,340 430,348
+            C 450,354 470,357 490,358
+          " fill="none" stroke="#00e676" stroke-width="2.5"/>
+          <!-- Human dots scattered wide -->
+          <circle cx="95"  cy="352" r="4" fill="#00e676" opacity="0.7"/>
+          <circle cx="118" cy="344" r="4" fill="#00e676" opacity="0.7"/>
+          <circle cx="142" cy="330" r="4" fill="#00e676" opacity="0.7"/>
+          <circle cx="163" cy="312" r="4" fill="#00e676" opacity="0.7"/>
+          <circle cx="182" cy="294" r="4" fill="#00e676" opacity="0.7"/>
+          <circle cx="200" cy="272" r="4" fill="#00e676" opacity="0.7"/>
+          <circle cx="218" cy="247" r="4" fill="#00e676" opacity="0.7"/>
+          <circle cx="234" cy="222" r="4" fill="#00e676" opacity="0.7"/>
+          <circle cx="249" cy="198" r="4" fill="#00e676" opacity="0.7"/>
+          <circle cx="260" cy="182" r="4" fill="#00e676" opacity="0.7"/>
+          <circle cx="270" cy="172" r="4" fill="#00e676" opacity="0.7"/>
+          <circle cx="281" cy="182" r="4" fill="#00e676" opacity="0.7"/>
+          <circle cx="292" cy="198" r="4" fill="#00e676" opacity="0.7"/>
+          <circle cx="306" cy="222" r="4" fill="#00e676" opacity="0.7"/>
+          <circle cx="322" cy="247" r="4" fill="#00e676" opacity="0.7"/>
+          <circle cx="340" cy="272" r="4" fill="#00e676" opacity="0.7"/>
+          <circle cx="358" cy="294" r="4" fill="#00e676" opacity="0.7"/>
+          <circle cx="377" cy="312" r="4" fill="#00e676" opacity="0.7"/>
+          <circle cx="398" cy="330" r="4" fill="#00e676" opacity="0.7"/>
+          <circle cx="422" cy="344" r="4" fill="#00e676" opacity="0.7"/>
+          <circle cx="447" cy="352" r="4" fill="#00e676" opacity="0.7"/>
+          <!-- Label -->
+          <text x="270" y="148" fill="#00e676" font-size="14" text-anchor="middle" font-family="Inter,sans-serif" font-weight="700">Humans (wide spread)</text>
+        </g>
+
+        <!-- Twin bell curve — narrow, cyan dashed -->
+        <g>
+          <!-- Filled area under twin curve -->
+          <path d="
+            M 155,358
+            C 170,357 185,353 200,344
+            C 215,333 228,314 240,291
+            C 252,267 260,242 265,220
+            C 268,206 270,196 270,188
+            C 270,196 272,206 275,220
+            C 280,242 288,267 300,291
+            C 312,314 325,333 340,344
+            C 355,353 370,357 385,358
+            Z
+          " fill="#00d4ff" fill-opacity="0.10"/>
+          <!-- Twin curve outline dashed -->
+          <path d="
+            M 155,358
+            C 170,357 185,353 200,344
+            C 215,333 228,314 240,291
+            C 252,267 260,242 265,220
+            C 268,206 270,196 270,188
+            C 270,196 272,206 275,220
+            C 280,242 288,267 300,291
+            C 312,314 325,333 340,344
+            C 355,353 370,357 385,358
+          " fill="none" stroke="#00d4ff" stroke-width="2.5" stroke-dasharray="7 4"/>
+          <!-- Twin dots clustered near center -->
+          <circle cx="200" cy="344" r="4" fill="#00d4ff" opacity="0.85"/>
+          <circle cx="218" cy="330" r="4" fill="#00d4ff" opacity="0.85"/>
+          <circle cx="234" cy="308" r="4" fill="#00d4ff" opacity="0.85"/>
+          <circle cx="248" cy="280" r="4" fill="#00d4ff" opacity="0.85"/>
+          <circle cx="259" cy="253" r="4" fill="#00d4ff" opacity="0.85"/>
+          <circle cx="265" cy="228" r="4" fill="#00d4ff" opacity="0.85"/>
+          <circle cx="270" cy="196" r="4" fill="#00d4ff" opacity="0.85"/>
+          <circle cx="275" cy="228" r="4" fill="#00d4ff" opacity="0.85"/>
+          <circle cx="281" cy="253" r="4" fill="#00d4ff" opacity="0.85"/>
+          <circle cx="292" cy="280" r="4" fill="#00d4ff" opacity="0.85"/>
+          <circle cx="306" cy="308" r="4" fill="#00d4ff" opacity="0.85"/>
+          <circle cx="322" cy="330" r="4" fill="#00d4ff" opacity="0.85"/>
+          <circle cx="340" cy="344" r="4" fill="#00d4ff" opacity="0.85"/>
+          <!-- Label -->
+          <text x="270" y="175" fill="#00d4ff" font-size="14" text-anchor="middle" font-family="Inter,sans-serif" font-weight="700">Twins (clustered)</text>
+        </g>
+
+        <!-- Annotation: compressed -->
+        <g class="anim-step">
+          <!-- Width comparison brackets -->
+          <line x1="95" y1="375" x2="447" y2="375" stroke="#00e676" stroke-width="1.5" opacity="0.6"/>
+          <line x1="95" y1="370" x2="95" y2="380" stroke="#00e676" stroke-width="1.5" opacity="0.6"/>
+          <line x1="447" y1="370" x2="447" y2="380" stroke="#00e676" stroke-width="1.5" opacity="0.6"/>
+
+          <line x1="200" y1="385" x2="340" y2="385" stroke="#00d4ff" stroke-width="1.5" opacity="0.7"/>
+          <line x1="200" y1="380" x2="200" y2="390" stroke="#00d4ff" stroke-width="1.5" opacity="0.7"/>
+          <line x1="340" y1="380" x2="340" y2="390" stroke="#00d4ff" stroke-width="1.5" opacity="0.7"/>
+
+          <text x="270" y="418" fill="#ff6b35" font-size="12" text-anchor="middle" font-family="Inter,sans-serif" font-weight="600">Twins compressed toward base model's mean (37% less spread)</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ SLIDE 11 — Distortion 3: Representation Bias ============================================================ -->
+<section class="slide layout-center" id="slide-11">
+  <div class="slide-content">
+    <p class="label">Distortion 3</p>
+    <h2>Representation Bias</h2>
+    <div class="anim-step">
+      <p>Twin accuracy is <span class="text-orange">not uniform</span> across the population. The model favors people already over-represented in training data.</p>
+    </div>
+    <div class="anim-step">
+      <p style="color:var(--text-dim); font-size:clamp(13px,1.4vw,18px); margin-bottom:8px;">In practice: brands using digital twins to simulate lower-income or politically extreme consumers — often the hardest audiences to reach through traditional research — will get the least reliable results.</p>
+      <div class="two-col" style="margin-top:8px;">
+        <div>
+          <p class="label" style="font-size:11px; color:var(--accent-green);">Better accuracy for</p>
+          <p>Postgraduate educated</p>
+          <p>Income $100K+</p>
+          <p>Moderate political views</p>
+          <p>Occasional religious attendance</p>
+        </div>
+        <div>
+          <p class="label" style="font-size:11px; color:var(--accent-orange);">Worse accuracy for</p>
+          <p>Less than high school</p>
+          <p>Income $30K–50K</p>
+          <p>Very conservative or very liberal</p>
+          <p>Never attends religious services</p>
+        </div>
+      </div>
+    </div>
+    <div class="anim-step">
+      <div class="highlight-box orange">
+        <p style="margin:0;">Social science already over-studies <span class="text-orange">WEIRD populations</span> (Western, Educated, Industrialized, Rich, Democratic). Digital twins will systematically amplify this bias.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ SLIDE 12 — Distortion 4: Ideological Biases ============================================================ -->
+<section class="slide layout-center" id="slide-12">
+  <div class="slide-content">
+    <p class="label">Distortion 4</p>
+    <h2>Ideological Biases</h2>
+    <div class="anim-step">
+      <p>Twins don't just fail to match human opinions — they <span class="text-orange">substitute their own</span>. The biases originate in how the model was trained — the text it learned from and the human feedback used to shape its responses.</p>
+    </div>
+    <div class="anim-step">
+      <div class="two-col" style="margin-top:8px;">
+        <div>
+          <p class="label" style="font-size:11px; color:var(--accent-cyan);">"Pro-Human" lean</p>
+          <p style="font-size:clamp(13px,1.4vw,18px);">More trusting of other people</p>
+          <p style="font-size:clamp(13px,1.4vw,18px);">More willing to pay healthcare taxes</p>
+          <p style="font-size:clamp(13px,1.4vw,18px);">More pro-regulation of fees</p>
+        </div>
+        <div>
+          <p class="label" style="font-size:11px; color:var(--accent-purple);">"Pro-Technology" lean</p>
+          <p style="font-size:clamp(13px,1.4vw,18px);">More accepting of algorithmic hiring</p>
+          <p style="font-size:clamp(13px,1.4vw,18px);">Less concerned about online privacy</p>
+          <p style="font-size:clamp(13px,1.4vw,18px);">Under-reporting Netflix / TikTok use</p>
+        </div>
+      </div>
+    </div>
+    <div class="anim-step">
+      <div class="key-insight">
+        <p>Dark twist: twins scored <span class="text-orange">human-generated ideas lower</span> than AI-generated ones when rating creativity. For teams using twins to test creative concepts, this means results could systematically favor AI work — a material conflict of interest.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ SLIDE 13 — Distortion 5: Hyper-Rationality ============================================================ -->
+<section class="slide layout-split" id="slide-13">
+  <div class="slide-text">
+    <p class="label">Distortion 5</p>
+    <h2>Hyper-Rationality</h2>
+    <div class="anim-step">
+      <p>Humans are irrational. We fall for defaults, decoys, compromises. Twins don't.</p>
+    </div>
+    <div class="anim-step">
+      <p>Twins <span class="text-orange">failed to replicate</span> the attraction effect (adding an inferior option makes another look better by comparison) and the compromise effect (people prefer the middle option between two extremes) — classic signs that humans use mental shortcuts, not pure logic.</p>
+    </div>
+    <div class="anim-step">
+      <p>Twins displayed <span class="text-orange">perfect factual knowledge</span> on questions humans got wrong.</p>
+    </div>
+    <div class="anim-step">
+      <div class="highlight-box purple">
+        <p style="margin:0; font-size:clamp(12px,1.3vw,17px);">Exception: on <em>well-known published paradigms</em>, twins did show the effect — but only because they memorized the published result from training data. In other words, the twin passed the test by having read the answer key, not by genuinely simulating a human. This is <span class="text-orange">leakage</span>, not fidelity.</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-visual">
+    <div class="diagram-container">
+      <svg viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg">
+        <line x1="60" y1="200" x2="440" y2="200" stroke="#334" stroke-width="2"/>
+        <polygon points="440,200 428,194 428,206" fill="#334"/>
+        <text x="60" y="228" fill="#6b7394" font-size="12" text-anchor="middle" font-family="Inter,sans-serif">Fully</text>
+        <text x="60" y="243" fill="#6b7394" font-size="12" text-anchor="middle" font-family="Inter,sans-serif">irrational</text>
+        <text x="440" y="228" fill="#6b7394" font-size="12" text-anchor="middle" font-family="Inter,sans-serif">Fully</text>
+        <text x="440" y="243" fill="#6b7394" font-size="12" text-anchor="middle" font-family="Inter,sans-serif">rational</text>
+        <g>
+          <circle cx="185" cy="200" r="42" fill="#00e676" fill-opacity="0.1" stroke="#00e676" stroke-width="2"/>
+          <text x="185" y="148" fill="#00e676" font-size="13" text-anchor="middle" font-family="Inter,sans-serif" font-weight="700">Humans</text>
+          <text x="185" y="165" fill="#6b7394" font-size="11" text-anchor="middle" font-family="Inter,sans-serif">biased · bounded</text>
+          <text x="185" y="180" fill="#6b7394" font-size="11" text-anchor="middle" font-family="Inter,sans-serif">forgetful · erratic</text>
+        </g>
+        <g>
+          <circle cx="370" cy="200" r="42" fill="#b388ff" fill-opacity="0.1" stroke="#b388ff" stroke-width="2"/>
+          <text x="370" y="148" fill="#b388ff" font-size="13" text-anchor="middle" font-family="Inter,sans-serif" font-weight="700">Twins</text>
+          <text x="370" y="165" fill="#6b7394" font-size="11" text-anchor="middle" font-family="Inter,sans-serif">perfect knowledge</text>
+          <text x="370" y="180" fill="#6b7394" font-size="11" text-anchor="middle" font-family="Inter,sans-serif">no cognitive bias</text>
+        </g>
+        <g class="anim-step">
+          <line x1="227" y1="200" x2="328" y2="200" stroke="#ff6b35" stroke-width="2" stroke-dasharray="5 3"/>
+          <text x="278" y="186" fill="#ff6b35" font-size="12" text-anchor="middle" font-family="Inter,sans-serif">The Gap</text>
+          <text x="250" y="295" fill="#6b7394" font-size="12" text-anchor="middle" font-family="Inter,sans-serif">✗ No attraction effect</text>
+          <text x="250" y="318" fill="#6b7394" font-size="12" text-anchor="middle" font-family="Inter,sans-serif">✗ No default effect (novel paradigms)</text>
+          <text x="250" y="341" fill="#6b7394" font-size="12" text-anchor="middle" font-family="Inter,sans-serif">✗ Perfect factual recall</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ SLIDE 14 — Leakage ============================================================ -->
+<section class="slide layout-center" id="slide-14">
+  <div class="slide-content">
+    <p class="label">The Hidden Problem</p>
+    <h2>Prior "Success" May Be Leakage</h2>
+    <div class="anim-step">
+      <p>When a twin replicates a known effect, it might just be <span class="text-orange">recalling the published finding</span> from training data.</p>
+    </div>
+    <div class="anim-step">
+      <div class="two-col" style="margin-top:8px;">
+        <div>
+          <p class="label" style="font-size:11px; color:var(--accent-orange);">Classic (known) paradigm</p>
+          <p>Twin <span class="text-green">does</span> show the expected effect.</p>
+          <p style="color:var(--text-dim); font-size:clamp(13px,1.4vw,17px);">Trained on the paper that proved it exists.</p>
+        </div>
+        <div>
+          <p class="label" style="font-size:11px; color:var(--accent-cyan);">Novel paradigm</p>
+          <p>Twin <span class="text-orange">does not</span> show the expected effect.</p>
+          <p style="color:var(--text-dim); font-size:clamp(13px,1.4vw,17px);">No training signal to copy from.</p>
+        </div>
+      </div>
+    </div>
+    <div class="anim-step">
+      <div class="key-insight">
+        <p>Studies that validated digital twins using known paradigms may have measured <em>memorization</em>, not <em>simulation</em>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ SLIDE 15 — What Are Twins Worth ============================================================ -->
+<section class="slide layout-center" id="slide-15">
+  <div class="slide-content">
+    <p class="label">Calibration</p>
+    <h2>What's a Digital Twin Actually Worth?</h2>
+    <div class="anim-step">
+      <p>The authors compare twins to XGBoost (a standard machine learning model trained on real human responses, used as a benchmark) — asking: how many real respondents does it take for the trained model to match twin performance?</p>
+    </div>
+    <div class="anim-step">
+      <div class="two-col" style="margin-top:12px;">
+        <div style="text-align:center;">
+          <p class="big-number text-cyan" style="font-size:clamp(32px,4vw,60px);">~180</p>
+          <p style="color:var(--text-dim);">real respondents for XGBoost to match full-persona twin correlation</p>
+        </div>
+        <div style="text-align:center;">
+          <p class="big-number text-cyan" style="font-size:clamp(32px,4vw,60px);">&lt;0.29</p>
+          <p style="color:var(--text-dim);">max XGBoost correlation even with 650 real respondents</p>
+        </div>
+      </div>
+    </div>
+    <div class="anim-step">
+      <div class="highlight-box">
+        <p style="margin:0;">Twins ≈ running your study on ~200 real people. Useful — but far from replacing human research.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ SLIDE 16 — The Verdict ============================================================ -->
+<section class="slide layout-center" id="slide-16">
+  <div class="slide-content">
+    <p class="label">The Verdict</p>
+    <h2>Funhouse Mirrors, Not Windows</h2>
+    <div class="anim-step">
+      <p>Digital twins are not faithful replicas. They are <span class="text-orange">systematic distortions</span> that look deceptively human.</p>
+    </div>
+    <div class="anim-step">
+      <p>They create an <span class="text-orange">illusion of personalization</span> — but underneath, they mostly encode demographic stereotypes and LLM priors.</p>
+    </div>
+    <div class="anim-step">
+      <div class="highlight-box orange">
+        <p style="margin:0;"><strong>Deploying them at scale risks producing confident, plausible-looking, systematically wrong conclusions.</strong></p>
+      </div>
+    </div>
+    <div class="anim-step">
+      <div class="key-insight">
+        <p>The technology isn't worthless. But it needs honest benchmarking — on novel paradigms, at the individual level — before use in consequential research or policy.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ SLIDE 17 — Five in Summary ============================================================ -->
+<section class="slide layout-center" id="slide-17">
+  <div class="slide-content">
+    <p class="label">Summary</p>
+    <h2>The Five Distortions</h2>
+    <div class="anim-step">
+      <div class="card-row" style="margin-top:12px;">
+        <div class="card">
+          <p class="label" style="color:var(--accent-orange);">① Stereotyping</p>
+          <p style="font-size:clamp(12px,1.2vw,16px);">Over-relies on demographics, ignores individual cognition</p>
+        </div>
+        <div class="card">
+          <p class="label" style="color:var(--accent-orange);">② Individuation</p>
+          <p style="font-size:clamp(12px,1.2vw,16px);">Responses cluster near the base model — too homogeneous</p>
+        </div>
+      </div>
+    </div>
+    <div class="anim-step">
+      <div class="card-row">
+        <div class="card">
+          <p class="label" style="color:var(--accent-orange);">③ Representation</p>
+          <p style="font-size:clamp(12px,1.2vw,16px);">More accurate for WEIRD populations — amplifies existing bias</p>
+        </div>
+        <div class="card">
+          <p class="label" style="color:var(--accent-orange);">④ Ideological</p>
+          <p style="font-size:clamp(12px,1.2vw,16px);">Pro-human, pro-technology, human-averse in creativity tasks</p>
+        </div>
+      </div>
+    </div>
+    <div class="anim-step">
+      <div class="card-row">
+        <div class="card" style="flex:1;">
+          <p class="label" style="color:var(--accent-orange);">⑤ Hyper-Rationality</p>
+          <p style="font-size:clamp(12px,1.2vw,16px);">Too smart, too consistent — fails to replicate how real humans use mental shortcuts and make imperfect, shortcut-driven decisions</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<div class="progress-bar"></div>
+<div class="slide-counter"></div>
+<div class="step-indicator"></div>
+<div class="nav-hint">Right arrow to advance · Left arrow to go back · F for fullscreen</div>
+
+<script>
+(function () {
+  'use strict';
+  let currentSlide = 0, currentStep = 0, slides = [], totalSlides = 0;
+  function init() {
+    slides = Array.from(document.querySelectorAll('.slide'));
+    totalSlides = slides.length;
+    if (totalSlides === 0) return;
+    let initSlide = 0, initStep = 0;
+    const hash = window.location.hash.substring(1);
+    if (hash) {
+      const params = new URLSearchParams(hash);
+      if (params.has('slide')) initSlide = Math.max(0, Math.min(parseInt(params.get('slide')) || 0, totalSlides - 1));
+      if (params.has('step')) initStep = parseInt(params.get('step')) || 0;
+    }
+    showSlide(initSlide, initStep);
+    updateUI();
+    const hint = document.querySelector('.nav-hint');
+    if (hint) setTimeout(() => hint.classList.add('hidden'), 4000);
+  }
+  function getUniqueSteps(slideEl) {
+    const allSteps = slideEl.querySelectorAll('.anim-step');
+    return Array.from(allSteps).filter(step => {
+      let parent = step.parentElement;
+      while (parent && parent !== slideEl) {
+        if (parent.classList && parent.classList.contains('anim-step')) return false;
+        parent = parent.parentElement;
+      }
+      return true;
+    });
+  }
+  function showSlide(index, step) {
+    if (index < 0 || index >= totalSlides) return;
+    slides.forEach(s => s.classList.remove('active'));
+    slides[index].classList.add('active');
+    currentSlide = index;
+    const steps = getUniqueSteps(slides[index]);
+    steps.forEach((s, i) => { if (i < step) s.classList.add('visible'); else s.classList.remove('visible'); });
+    currentStep = step;
+    updateUI();
+  }
+  function advance() {
+    const steps = getUniqueSteps(slides[currentSlide]);
+    if (currentStep < steps.length) { steps[currentStep].classList.add('visible'); currentStep++; updateUI(); }
+    else if (currentSlide < totalSlides - 1) showSlide(currentSlide + 1, 0);
+  }
+  function goBack() {
+    if (currentStep > 0) { currentStep--; const steps = getUniqueSteps(slides[currentSlide]); steps[currentStep].classList.remove('visible'); updateUI(); }
+    else if (currentSlide > 0) { const prevSteps = getUniqueSteps(slides[currentSlide - 1]); showSlide(currentSlide - 1, prevSteps.length); }
+  }
+  function updateUI() {
+    const progressBar = document.querySelector('.progress-bar');
+    if (progressBar) {
+      const totalStepsAllSlides = slides.reduce((sum, s) => sum + getUniqueSteps(s).length + 1, 0);
+      let completedSteps = 0;
+      for (let i = 0; i < currentSlide; i++) completedSteps += getUniqueSteps(slides[i]).length + 1;
+      completedSteps += currentStep;
+      progressBar.style.width = (completedSteps / totalStepsAllSlides) * 100 + '%';
+    }
+    const counter = document.querySelector('.slide-counter');
+    if (counter) counter.textContent = (currentSlide + 1) + ' / ' + totalSlides;
+    const stepIndicator = document.querySelector('.step-indicator');
+    if (stepIndicator) {
+      const steps = getUniqueSteps(slides[currentSlide]);
+      if (steps.length > 0) {
+        stepIndicator.innerHTML = '';
+        for (let i = 0; i < steps.length; i++) {
+          const dot = document.createElement('div');
+          dot.className = 'dot' + (i < currentStep ? ' active' : '');
+          stepIndicator.appendChild(dot);
+        }
+        stepIndicator.style.display = 'flex';
+      } else { stepIndicator.style.display = 'none'; }
+    }
+  }
+  function toggleFullscreen() {
+    const el = document.querySelector('.presentation');
+    if (!document.fullscreenElement) (el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen).call(el);
+    else (document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen).call(document);
+  }
+  document.addEventListener('keydown', function (e) {
+    switch (e.key) {
+      case 'ArrowRight': case 'PageDown': e.preventDefault(); advance(); break;
+      case 'ArrowLeft': case 'PageUp': e.preventDefault(); goBack(); break;
+      case 'f': case 'F': if (!e.ctrlKey && !e.metaKey) { e.preventDefault(); toggleFullscreen(); } break;
+      case 'Home': e.preventDefault(); showSlide(0, 0); break;
+      case 'End': e.preventDefault(); const lastSteps = getUniqueSteps(slides[totalSlides - 1]); showSlide(totalSlides - 1, lastSteps.length); break;
+    }
+  });
+  let touchStartX = 0;
+  document.addEventListener('touchstart', function (e) { touchStartX = e.touches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', function (e) { const dx = e.changedTouches[0].clientX - touchStartX; if (Math.abs(dx) > 50) { if (dx < 0) advance(); else goBack(); } }, { passive: true });
+  window.presentationAPI = { advance, goBack, showSlide, getCurrentSlide: () => currentSlide, getCurrentStep: () => currentStep, getTotalSlides: () => totalSlides, getStepCount: (i) => getUniqueSteps(slides[i]).length };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+</script>
+</body>
+</html>

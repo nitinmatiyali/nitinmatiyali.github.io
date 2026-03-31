@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI-Human Hybrids for Marketing Research — Arora et al. 2025</title>
+  <link rel="stylesheet" href="css/presentation.css">
+  <style>
+    .slide-content, .slide-text {
+      overflow: hidden;
+      max-height: 100%;
+    }
+    .slide.layout-center .slide-content {
+      max-height: calc(100vh - var(--slide-padding) * 2);
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+<div style="position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);border-bottom:1px solid #e5e7eb;height:48px;display:flex;align-items:center;padding:0 max(1.5rem,4vw);font-family:Inter,system-ui,sans-serif;gap:0;"><a href="/projects/" style="font-size:13px;font-weight:500;color:#6b7280;text-decoration:none;display:flex;align-items:center;gap:6px;">&#8592; Projects</a><span style="color:#e5e7eb;margin:0 10px;">|</span><a href="/" style="font-size:13px;font-weight:500;color:#6b7280;text-decoration:none;">Nitin Matiyali</a></div>
+<div class="presentation">
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 1: TITLE -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide title-slide layout-center active" id="slide-1">
+    <div class="slide-content">
+      <p class="label" style="letter-spacing:0.2em;">SSRN · Arora, Chakraborty &amp; Nishimura · Wisconsin School of Business</p>
+      <h1>AI-Human Hybrids</h1>
+      <p class="subtitle">Revolutionizing Marketing Research with a Large Language Model</p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 2: THE PROBLEM -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide layout-center" id="slide-2">
+    <div class="slide-content">
+      <p class="label">The Stakes</p>
+      <h2>Marketing research is expensive, slow, and increasingly hard to run</h2>
+      <div class="anim-step">
+        <div class="card-row">
+          <div class="card">
+            <p class="label">The scale</p>
+            <p>Companies spend billions annually on consumer panels — qual IDIs, quant surveys — before any product launches.</p>
+          </div>
+          <div class="card">
+            <p class="label">The quality problem</p>
+            <p>Human panels suffer from acquiescence bias, positivity bias, and satisficing. Even expensive studies are unreliable.</p>
+          </div>
+          <div class="card">
+            <p class="label">The access problem</p>
+            <p>Hard-to-reach respondents — executives, niche B2B buyers — are slow and very expensive to recruit.</p>
+          </div>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="key-insight">
+          <p>The question: can LLMs assist at multiple stages of the marketing research process — and how well?</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 3: THE FRAMEWORK -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide layout-split" id="slide-3">
+    <div class="slide-text">
+      <p class="label">The Framework (Table 1)</p>
+      <h2>LLMs can assist at every stage — not just data collection</h2>
+      <p>The paper maps LLM roles across the full research process.</p>
+      <div class="anim-step">
+        <div class="highlight-box">
+          <p><strong>Study Design:</strong> Generate discussion guides, draft survey questionnaires, create A/B concepts.</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="highlight-box orange">
+          <p><strong>Sample Selection:</strong> Identify respondent characteristics. Generate synthetic personas.</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="highlight-box purple">
+          <p><strong>Data Collection:</strong> Synthetic respondents for IDIs and surveys.</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="highlight-box green">
+          <p><strong>Data Analysis:</strong> Theme extraction, summarization, statistical visualization.</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="key-insight">
+          <p>The human supervisor remains essential throughout — especially for problem definition and final judgment.</p>
+        </div>
+      </div>
+    </div>
+    <div class="slide-visual">
+      <div class="diagram-container">
+        <svg viewBox="0 0 500 420">
+          <defs>
+            <marker id="arr-fw" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+              <polygon points="0 0, 10 3.5, 0 7" fill="#00d4ff"/>
+            </marker>
+          </defs>
+
+          <!-- Research stages -->
+          <rect x="150" y="20" width="200" height="44" rx="8" fill="#161b40" stroke="#ff6b35" stroke-width="2"/>
+          <text x="250" y="40" text-anchor="middle" fill="#ff6b35" font-size="13" font-family="Inter, sans-serif" font-weight="600">Problem Definition</text>
+          <text x="250" y="56" text-anchor="middle" fill="#6b7394" font-size="11" font-family="Inter, sans-serif">Human only</text>
+
+          <rect x="150" y="90" width="200" height="44" rx="8" fill="#161b40" stroke="#00d4ff" stroke-width="1.5"/>
+          <text x="250" y="110" text-anchor="middle" fill="#00d4ff" font-size="13" font-family="Inter, sans-serif" font-weight="600">Study Design</text>
+          <text x="250" y="126" text-anchor="middle" fill="#b0b8d0" font-size="11" font-family="Inter, sans-serif">LLM assists</text>
+
+          <rect x="150" y="160" width="200" height="44" rx="8" fill="#161b40" stroke="#00d4ff" stroke-width="1.5"/>
+          <text x="250" y="180" text-anchor="middle" fill="#00d4ff" font-size="13" font-family="Inter, sans-serif" font-weight="600">Sample Selection</text>
+          <text x="250" y="196" text-anchor="middle" fill="#b0b8d0" font-size="11" font-family="Inter, sans-serif">LLM suggests + generates personas</text>
+
+          <rect x="150" y="230" width="200" height="44" rx="8" fill="#161b40" stroke="#b388ff" stroke-width="2"/>
+          <text x="250" y="250" text-anchor="middle" fill="#b388ff" font-size="13" font-family="Inter, sans-serif" font-weight="600">Data Collection</text>
+          <text x="250" y="266" text-anchor="middle" fill="#b0b8d0" font-size="11" font-family="Inter, sans-serif">Synthetic respondents ← tested here</text>
+
+          <rect x="150" y="300" width="200" height="44" rx="8" fill="#161b40" stroke="#b388ff" stroke-width="2"/>
+          <text x="250" y="320" text-anchor="middle" fill="#b388ff" font-size="13" font-family="Inter, sans-serif" font-weight="600">Data Analysis</text>
+          <text x="250" y="336" text-anchor="middle" fill="#b0b8d0" font-size="11" font-family="Inter, sans-serif">Themes, summaries ← tested here</text>
+
+          <rect x="150" y="370" width="200" height="40" rx="8" fill="#161b40" stroke="#ff6b35" stroke-width="2"/>
+          <text x="250" y="388" text-anchor="middle" fill="#ff6b35" font-size="13" font-family="Inter, sans-serif" font-weight="600">Insights Delivery</text>
+          <text x="250" y="404" text-anchor="middle" fill="#6b7394" font-size="11" font-family="Inter, sans-serif">Human-led</text>
+
+          <!-- Arrows -->
+          <line x1="250" y1="64" x2="250" y2="85" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#arr-fw)"/>
+          <line x1="250" y1="134" x2="250" y2="155" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#arr-fw)"/>
+          <line x1="250" y1="204" x2="250" y2="225" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#arr-fw)"/>
+          <line x1="250" y1="274" x2="250" y2="295" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#arr-fw)"/>
+          <line x1="250" y1="344" x2="250" y2="365" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#arr-fw)"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 4: THE STUDIES -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide layout-center" id="slide-4">
+    <div class="slide-content">
+      <p class="label">The Empirical Design</p>
+      <h2>Two real studies from a Fortune 500 food company — replicated with GPT-4</h2>
+      <div class="anim-step">
+        <div class="card-row">
+          <div class="card">
+            <p class="label" style="color:var(--accent-orange)">Study 1 · Qualitative</p>
+            <p>Friendsgiving messaging research. Originally conducted in 2019.</p>
+            <p style="color:var(--text-dim); font-size:clamp(11px,1.2vw,16px);">In-depth interviews (IDIs). Multiple LLM hybrid conditions tested against human-only benchmark.</p>
+          </div>
+          <div class="card">
+            <p class="label" style="color:var(--accent-purple)">Study 2 · Quantitative</p>
+            <p>Refrigerated dog food concept test. n=605 real respondents (2019).</p>
+            <p style="color:var(--text-dim); font-size:clamp(11px,1.2vw,16px);">Likert-scale survey. Three synthetic conditions (zero-shot, few-shot, RAG) vs. human benchmark.</p>
+          </div>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="key-insight">
+          <p>The original human studies serve as ground truth. The LLM is benchmarked against them directly.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 5: ACT 1 TRANSITION -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide section-transition layout-center" id="slide-5">
+    <div class="slide-content">
+      <p class="label">Part 1 of 2</p>
+      <h2 class="gradient-text">Qualitative Research</h2>
+      <p>Study 1: Where in the IDI process can LLMs add value — and how much?</p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 6: FOUR HYBRID CONDITIONS -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide layout-split" id="slide-6">
+    <div class="slide-text">
+      <p class="label">Study 1 · Design (Table 4)</p>
+      <h2>Not one hybrid — four. Each assigns a different task to the LLM.</h2>
+      <p>The discussion guide is always human-led. Everything else can vary.</p>
+      <div class="anim-step">
+        <div class="highlight-box">
+          <p><strong>LLM Hybrid 1 — Synthetic Respondents:</strong> Mirror original human profiles exactly. LLM plays the respondent.</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="highlight-box orange">
+          <p><strong>LLM Hybrid 2 — Recruitment:</strong> LLM also selects who to interview. Generates novel personas beyond original demographics.</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="highlight-box purple">
+          <p><strong>LLM Hybrid 3 — Moderation:</strong> LLM acts as respondent AND moderator. Scores each answer; probes when score &lt;80/100.</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="highlight-box green">
+          <p><strong>LLM Hybrid 4 — Moderation + Recruitment:</strong> Full LLM control of everything except the discussion guide.</p>
+        </div>
+      </div>
+    </div>
+    <div class="slide-visual">
+      <div class="diagram-container">
+        <svg viewBox="0 0 500 420">
+          <!-- Table header -->
+          <rect x="10" y="15" width="480" height="32" rx="4" fill="#1a1f4a"/>
+          <text x="90" y="36" text-anchor="middle" fill="#6b7394" font-size="11" font-family="Inter, sans-serif">Guide</text>
+          <text x="200" y="36" text-anchor="middle" fill="#6b7394" font-size="11" font-family="Inter, sans-serif">Recruitment</text>
+          <text x="310" y="36" text-anchor="middle" fill="#6b7394" font-size="11" font-family="Inter, sans-serif">Respondents</text>
+          <text x="430" y="36" text-anchor="middle" fill="#6b7394" font-size="11" font-family="Inter, sans-serif">Moderation</text>
+
+          <!-- Row: All Human -->
+          <rect x="10" y="55" width="480" height="44" rx="4" fill="#161b40"/>
+          <text x="90" y="72" text-anchor="middle" fill="#ff6b35" font-size="11" font-family="Inter, sans-serif">Human</text>
+          <text x="90" y="88" text-anchor="middle" fill="#6b7394" font-size="10" font-family="Inter, sans-serif">All Human</text>
+          <text x="200" y="80" text-anchor="middle" fill="#ff6b35" font-size="11" font-family="Inter, sans-serif">Human</text>
+          <text x="310" y="80" text-anchor="middle" fill="#ff6b35" font-size="11" font-family="Inter, sans-serif">Human</text>
+          <text x="430" y="80" text-anchor="middle" fill="#ff6b35" font-size="11" font-family="Inter, sans-serif">Human</text>
+
+          <!-- Row: Hybrid 1 -->
+          <rect x="10" y="107" width="480" height="44" rx="4" fill="#161b40"/>
+          <text x="90" y="124" text-anchor="middle" fill="#ff6b35" font-size="11" font-family="Inter, sans-serif">Human</text>
+          <text x="90" y="140" text-anchor="middle" fill="#6b7394" font-size="10" font-family="Inter, sans-serif">Hybrid 1</text>
+          <text x="200" y="132" text-anchor="middle" fill="#ff6b35" font-size="11" font-family="Inter, sans-serif">Human</text>
+          <text x="310" y="132" text-anchor="middle" fill="#00d4ff" font-size="11" font-family="Inter, sans-serif">LLM</text>
+          <text x="430" y="132" text-anchor="middle" fill="#ff6b35" font-size="11" font-family="Inter, sans-serif">Human</text>
+
+          <!-- Row: Hybrid 2 -->
+          <rect x="10" y="159" width="480" height="44" rx="4" fill="#161b40"/>
+          <text x="90" y="176" text-anchor="middle" fill="#ff6b35" font-size="11" font-family="Inter, sans-serif">Human</text>
+          <text x="90" y="192" text-anchor="middle" fill="#6b7394" font-size="10" font-family="Inter, sans-serif">Hybrid 2</text>
+          <text x="200" y="184" text-anchor="middle" fill="#00d4ff" font-size="11" font-family="Inter, sans-serif">LLM</text>
+          <text x="310" y="184" text-anchor="middle" fill="#00d4ff" font-size="11" font-family="Inter, sans-serif">LLM</text>
+          <text x="430" y="184" text-anchor="middle" fill="#ff6b35" font-size="11" font-family="Inter, sans-serif">Human</text>
+
+          <!-- Row: Hybrid 3 (best) -->
+          <rect x="10" y="211" width="480" height="44" rx="4" fill="#161b40" stroke="#00e676" stroke-width="1.5"/>
+          <text x="90" y="228" text-anchor="middle" fill="#ff6b35" font-size="11" font-family="Inter, sans-serif">Human</text>
+          <text x="90" y="244" text-anchor="middle" fill="#00e676" font-size="10" font-family="Inter, sans-serif">★ Hybrid 3</text>
+          <text x="200" y="236" text-anchor="middle" fill="#ff6b35" font-size="11" font-family="Inter, sans-serif">Human</text>
+          <text x="310" y="236" text-anchor="middle" fill="#00d4ff" font-size="11" font-family="Inter, sans-serif">LLM</text>
+          <text x="430" y="236" text-anchor="middle" fill="#00d4ff" font-size="11" font-family="Inter, sans-serif">LLM</text>
+
+          <!-- Row: Hybrid 4 -->
+          <rect x="10" y="263" width="480" height="44" rx="4" fill="#161b40"/>
+          <text x="90" y="280" text-anchor="middle" fill="#ff6b35" font-size="11" font-family="Inter, sans-serif">Human</text>
+          <text x="90" y="296" text-anchor="middle" fill="#6b7394" font-size="10" font-family="Inter, sans-serif">Hybrid 4</text>
+          <text x="200" y="288" text-anchor="middle" fill="#00d4ff" font-size="11" font-family="Inter, sans-serif">LLM</text>
+          <text x="310" y="288" text-anchor="middle" fill="#00d4ff" font-size="11" font-family="Inter, sans-serif">LLM</text>
+          <text x="430" y="288" text-anchor="middle" fill="#00d4ff" font-size="11" font-family="Inter, sans-serif">LLM</text>
+
+          <text x="250" y="340" text-anchor="middle" fill="#6b7394" font-size="11" font-family="Inter, sans-serif">Orange = Human · Cyan = LLM</text>
+          <text x="250" y="360" text-anchor="middle" fill="#00e676" font-size="11" font-family="Inter, sans-serif">★ Hybrid 3 = best performer across all metrics</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 7: HOW MODERATION WORKS -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide layout-split" id="slide-7">
+    <div class="slide-text">
+      <p class="label">Study 1 · LLM Hybrid 3</p>
+      <h2>The LLM moderator scores every answer and probes when depth is low</h2>
+      <p>Four scoring dimensions per answer-turn:</p>
+      <div class="anim-step">
+        <div class="card-row">
+          <div class="card">
+            <p class="label">Relevance</p>
+            <p>Is it on-topic?</p>
+          </div>
+          <div class="card">
+            <p class="label">Depth</p>
+            <p>Is it comprehensive?</p>
+          </div>
+          <div class="card">
+            <p class="label">Clarity</p>
+            <p>Is it detailed?</p>
+          </div>
+          <div class="card">
+            <p class="label">Informativeness</p>
+            <p>Is it new and useful?</p>
+          </div>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="highlight-box orange">
+          <p>Average score &lt;80/100 → LLM generates a follow-up probe. Score ≥80 → next question.</p>
+          <p style="color:var(--text-dim); font-size:clamp(11px,1.2vw,16px);">Example: initial answer scores 71.25 → probe issued → re-answer scores 83.75 → proceeds.</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="key-insight">
+          <p>Hybrid 3 produces the highest information density and coherence of all hybrid conditions.</p>
+          <p style="color:var(--text-dim); font-size:clamp(11px,1.2vw,16px);">And it is semantically closest to human-generated data (BERT embeddings).</p>
+        </div>
+      </div>
+    </div>
+    <div class="slide-visual">
+      <div class="diagram-container">
+        <svg viewBox="0 0 500 400">
+          <defs>
+            <marker id="arr-mod" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+              <polygon points="0 0, 10 3.5, 0 7" fill="#00d4ff"/>
+            </marker>
+            <marker id="arr-red" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+              <polygon points="0 0, 10 3.5, 0 7" fill="#ff5252"/>
+            </marker>
+            <marker id="arr-grn" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+              <polygon points="0 0, 10 3.5, 0 7" fill="#00e676"/>
+            </marker>
+          </defs>
+
+          <!-- Question box -->
+          <rect x="150" y="20" width="200" height="45" rx="8" fill="#161b40" stroke="#6b7394" stroke-width="1.5"/>
+          <text x="250" y="40" text-anchor="middle" fill="#b0b8d0" font-size="13" font-family="Inter, sans-serif">Question asked</text>
+          <text x="250" y="57" text-anchor="middle" fill="#6b7394" font-size="11" font-family="Inter, sans-serif">by LLM moderator</text>
+
+          <line x1="250" y1="65" x2="250" y2="90" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#arr-mod)"/>
+
+          <!-- LLM answer -->
+          <rect x="130" y="95" width="240" height="45" rx="8" fill="#161b40" stroke="#b388ff" stroke-width="1.5"/>
+          <text x="250" y="115" text-anchor="middle" fill="#b388ff" font-size="13" font-family="Inter, sans-serif">LLM synthetic answer</text>
+          <text x="250" y="132" text-anchor="middle" fill="#6b7394" font-size="11" font-family="Inter, sans-serif">(as a persona)</text>
+
+          <line x1="250" y1="140" x2="250" y2="165" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#arr-mod)"/>
+
+          <!-- Score box -->
+          <rect x="130" y="170" width="240" height="55" rx="8" fill="#161b40" stroke="#ffd740" stroke-width="1.5"/>
+          <text x="250" y="192" text-anchor="middle" fill="#ffd740" font-size="13" font-family="Inter, sans-serif">Score answer 0–100</text>
+          <text x="250" y="210" text-anchor="middle" fill="#b0b8d0" font-size="11" font-family="Inter, sans-serif">Relevance · Depth · Clarity · Informativeness</text>
+
+          <!-- Decision -->
+          <line x1="250" y1="225" x2="250" y2="250" stroke="#ffd740" stroke-width="1.5" marker-end="url(#arr-mod)"/>
+          <rect x="160" y="255" width="180" height="38" rx="8" fill="#1a1f4a" stroke="#ffd740" stroke-width="1"/>
+          <text x="250" y="275" text-anchor="middle" fill="#ffd740" font-size="13" font-family="Inter, sans-serif" font-weight="600">Score ≥ 80?</text>
+
+          <!-- Yes path -->
+          <line x1="340" y1="274" x2="420" y2="274" stroke="#00e676" stroke-width="1.5" marker-end="url(#arr-grn)"/>
+          <text x="440" y="270" fill="#00e676" font-size="12" font-family="Inter, sans-serif">Yes</text>
+          <text x="440" y="285" fill="#00e676" font-size="11" font-family="Inter, sans-serif">→ next Q</text>
+
+          <!-- No path -->
+          <line x1="250" y1="293" x2="250" y2="320" stroke="#ff5252" stroke-width="1.5" marker-end="url(#arr-red)"/>
+          <text x="258" y="310" fill="#ff5252" font-size="11" font-family="Inter, sans-serif">No (&lt;80)</text>
+          <rect x="130" y="325" width="240" height="45" rx="8" fill="#161b40" stroke="#ff5252" stroke-width="1.5"/>
+          <text x="250" y="345" text-anchor="middle" fill="#ff5252" font-size="13" font-family="Inter, sans-serif">LLM issues a probe</text>
+          <text x="250" y="362" text-anchor="middle" fill="#6b7394" font-size="11" font-family="Inter, sans-serif">"Can you elaborate on…?"</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 8: QUALITATIVE RESULTS -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide layout-center" id="slide-8">
+    <div class="slide-content">
+      <p class="label">Study 1 · Results (Tables 7 &amp; 9)</p>
+      <h2>LLM responses are <span class="text-cyan">deeper</span> and <span class="text-green">more informative</span> — but harder to read</h2>
+      <div class="anim-step">
+        <div class="card-row">
+          <div class="card">
+            <p class="label" style="color:var(--accent-cyan)">Depth score</p>
+            <p class="big-number text-cyan">+0.68</p>
+            <p>LLM responses score significantly higher on depth (p&lt;.05) — more detail-oriented.</p>
+          </div>
+          <div class="card">
+            <p class="label" style="color:var(--accent-green)">Informativeness score</p>
+            <p class="big-number text-green">+0.50</p>
+            <p>More informative (p&lt;.05). Human evaluators rate LLM answers as more novel and useful.</p>
+          </div>
+          <div class="card">
+            <p class="label" style="color:var(--accent-orange)">Readability</p>
+            <p class="big-number text-orange">12+</p>
+            <p>Years of education needed to read LLM responses. Human responses: 5th-grade level. LLM is verbose and complex.</p>
+          </div>
+        </div>
+      </div>
+      <div class="anim-step">
+        <p style="color:var(--text-secondary)">Clarity and Relevance: no significant difference between LLM and human responses.</p>
+      </div>
+      <div class="anim-step">
+        <div class="key-insight">
+          <p>Theme recovery: Human–LLM hybrid recovers <strong>96%</strong> of themes AND discovers <strong>23% new ones</strong> humans missed.</p>
+          <p style="color:var(--text-dim); font-size:clamp(11px,1.2vw,16px);">LLM-only: 77% recovery. The best hybrid is always better than either alone.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 9: EXPERT JUDGES -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide layout-center" id="slide-9">
+    <div class="slide-content">
+      <p class="label">Study 1 · Expert Judgment (Table 10)</p>
+      <h2>Expert judges unanimously preferred hybrid summaries over pure human or pure LLM</h2>
+      <div class="anim-step">
+        <div class="two-col">
+          <div>
+            <p class="label" style="color:var(--accent-orange)">3 of 5 judges preferred:</p>
+            <div class="highlight-box orange">
+              <p><strong>Human Generated — LLM Analyzed</strong></p>
+              <p style="color:var(--text-dim); font-size:clamp(11px,1.2vw,16px);">"Good examples, right amount of detail and storytelling."</p>
+            </div>
+          </div>
+          <div>
+            <p class="label" style="color:var(--accent-purple)">2 of 5 judges preferred:</p>
+            <div class="highlight-box purple">
+              <p><strong>LLM Generated — Human Analyzed</strong></p>
+              <p style="color:var(--text-dim); font-size:clamp(11px,1.2vw,16px);">"Thorough and interesting. Both functional and emotional lens."</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="key-insight">
+          <p>Zero out of five judges chose the all-human or all-LLM summary as best.</p>
+          <p style="color:var(--text-dim); font-size:clamp(11px,1.2vw,16px);">Hybrid wins regardless of whether it's the data or the analysis that's LLM-assisted.</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <p style="color:var(--text-secondary)">Bonus: LLM Hybrid 2 (recruitment) identified niche personas humans missed — vegans, LGBTQ+, restaurant chefs with Friendsgiving menus.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 10: ACT 2 TRANSITION -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide section-transition layout-center" id="slide-10">
+    <div class="slide-content">
+      <p class="label">Part 2 of 2</p>
+      <h2 class="gradient-text">Quantitative Research</h2>
+      <p>Study 2: Can synthetic respondents replicate real Likert-scale survey data?</p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 11: QUANT SETUP -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide layout-split" id="slide-11">
+    <div class="slide-text">
+      <p class="label">Study 2 · Setup</p>
+      <h2>605 real dog owners. 605 synthetic personas. Same demographics.</h2>
+      <p>The 2019 dog food survey is the ground truth. Three LLM conditions compete against it.</p>
+      <div class="anim-step">
+        <div class="highlight-box">
+          <p><strong>LLM1 — Zero-shot:</strong> Demographics only in system role. No other context.</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="highlight-box orange">
+          <p><strong>LLM2 — Few-shot (Response History):</strong> Previous answers for this persona are fed back in-context before the next question.</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="highlight-box purple">
+          <p><strong>LLM3 — Few-shot + RAG:</strong> Response history plus transcripts from a prior qualitative study on pet food (16 respondents) as external knowledge.</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <p>Three metrics compared: <span class="text-cyan">Mean bias</span> · <span class="text-orange">Heterogeneity</span> · <span class="text-purple">Internal consistency (correlations)</span></p>
+        <p style="color:var(--text-dim); font-size:clamp(11px,1.2vw,16px);">Lower = closer to human benchmark.</p>
+      </div>
+    </div>
+    <div class="slide-visual">
+      <div class="diagram-container">
+        <svg viewBox="0 0 500 400">
+          <defs>
+            <marker id="arr-q" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+              <polygon points="0 0, 10 3.5, 0 7" fill="#00d4ff"/>
+            </marker>
+          </defs>
+
+          <!-- Human benchmark -->
+          <rect x="150" y="20" width="200" height="55" rx="8" fill="#161b40" stroke="#ff6b35" stroke-width="2"/>
+          <text x="250" y="42" text-anchor="middle" fill="#ff6b35" font-size="13" font-family="Inter, sans-serif" font-weight="600">Human Ground Truth</text>
+          <text x="250" y="60" text-anchor="middle" fill="#b0b8d0" font-size="11" font-family="Inter, sans-serif">n=605 · Dog food survey · 2019</text>
+
+          <!-- Three conditions -->
+          <rect x="20" y="130" width="130" height="75" rx="8" fill="#161b40" stroke="#00d4ff" stroke-width="1.5"/>
+          <text x="85" y="153" text-anchor="middle" fill="#00d4ff" font-size="12" font-family="Inter, sans-serif" font-weight="600">LLM1</text>
+          <text x="85" y="170" text-anchor="middle" fill="#b0b8d0" font-size="10" font-family="Inter, sans-serif">Zero-shot</text>
+          <text x="85" y="186" text-anchor="middle" fill="#6b7394" font-size="10" font-family="Inter, sans-serif">demographics only</text>
+
+          <rect x="185" y="130" width="130" height="75" rx="8" fill="#161b40" stroke="#ff6b35" stroke-width="1.5"/>
+          <text x="250" y="153" text-anchor="middle" fill="#ff6b35" font-size="12" font-family="Inter, sans-serif" font-weight="600">LLM2</text>
+          <text x="250" y="170" text-anchor="middle" fill="#b0b8d0" font-size="10" font-family="Inter, sans-serif">Few-shot</text>
+          <text x="250" y="186" text-anchor="middle" fill="#6b7394" font-size="10" font-family="Inter, sans-serif">response history</text>
+
+          <rect x="350" y="130" width="130" height="75" rx="8" fill="#161b40" stroke="#b388ff" stroke-width="1.5"/>
+          <text x="415" y="153" text-anchor="middle" fill="#b388ff" font-size="12" font-family="Inter, sans-serif" font-weight="600">LLM3</text>
+          <text x="415" y="170" text-anchor="middle" fill="#b0b8d0" font-size="10" font-family="Inter, sans-serif">Few-shot + RAG</text>
+          <text x="415" y="186" text-anchor="middle" fill="#6b7394" font-size="10" font-family="Inter, sans-serif">+ qual transcripts</text>
+
+          <!-- Arrows -->
+          <line x1="210" y1="75" x2="100" y2="125" stroke="#6b7394" stroke-width="1" stroke-dasharray="4"/>
+          <line x1="250" y1="75" x2="250" y2="125" stroke="#6b7394" stroke-width="1" stroke-dasharray="4"/>
+          <line x1="290" y1="75" x2="400" y2="125" stroke="#6b7394" stroke-width="1" stroke-dasharray="4"/>
+
+          <!-- Metric labels -->
+          <text x="250" y="250" text-anchor="middle" fill="#b0b8d0" font-size="13" font-family="Inter, sans-serif" font-weight="600">Evaluated on 3 metrics:</text>
+          <text x="250" y="278" text-anchor="middle" fill="#00d4ff" font-size="12" font-family="Inter, sans-serif">Mean bias</text>
+          <text x="250" y="300" text-anchor="middle" fill="#ff6b35" font-size="12" font-family="Inter, sans-serif">Heterogeneity (variance)</text>
+          <text x="250" y="322" text-anchor="middle" fill="#b388ff" font-size="12" font-family="Inter, sans-serif">Internal consistency (correlations)</text>
+          <text x="250" y="350" text-anchor="middle" fill="#6b7394" font-size="11" font-family="Inter, sans-serif">Lower absolute difference = closer to human</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 12: THE KEY NUMBERS (TABLE 13) -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide layout-split" id="slide-12">
+    <div class="slide-text">
+      <p class="label">Study 2 · Results (Table 13)</p>
+      <h2>Mean bias stays stuck. Heterogeneity and correlations get dramatically better.</h2>
+      <div class="anim-step">
+        <div class="highlight-box">
+          <p><span class="text-cyan">Mean bias:</span> ~0.66–0.69 across all three models. Context does not fix this.</p>
+          <p style="color:var(--text-dim); font-size:clamp(11px,1.2vw,16px);">LLMs are about 0.7 points off (on a 1–5 scale) regardless of prompting strategy.</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="highlight-box orange">
+          <p><span class="text-orange">Heterogeneity:</span> LLM1=0.41 → LLM2=0.29 → LLM3=0.28. Both few-shot conditions significantly better (p&lt;.05). LLM2 and LLM3 tie.</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="highlight-box purple">
+          <p><span class="text-purple">Correlations:</span> LLM1=0.40 → LLM2=0.27 → LLM3=0.11. RAG delivers the largest gain here (p&lt;.05).</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="key-insight">
+          <p>Each level of context adds something. RAG is the key to recovering the correlation structure between survey items.</p>
+        </div>
+      </div>
+    </div>
+    <div class="slide-visual">
+      <div class="diagram-container">
+        <svg viewBox="0 0 500 420">
+          <!-- Title -->
+          <text x="250" y="22" text-anchor="middle" fill="#b0b8d0" font-size="13" font-family="Inter, sans-serif">Table 13: Absolute Difference from Human Data</text>
+          <text x="250" y="38" text-anchor="middle" fill="#6b7394" font-size="11" font-family="Inter, sans-serif">(lower = closer to human benchmark)</text>
+
+          <!-- Axes -->
+          <line x1="80" y1="60" x2="80" y2="360" stroke="#334" stroke-width="2"/>
+          <line x1="80" y1="360" x2="470" y2="360" stroke="#334" stroke-width="2"/>
+
+          <!-- Y axis labels -->
+          <text x="72" y="64" text-anchor="end" fill="#6b7394" font-size="10" font-family="Inter, sans-serif">0.45</text>
+          <text x="72" y="140" text-anchor="end" fill="#6b7394" font-size="10" font-family="Inter, sans-serif">0.30</text>
+          <text x="72" y="220" text-anchor="end" fill="#6b7394" font-size="10" font-family="Inter, sans-serif">0.15</text>
+          <text x="72" y="300" text-anchor="end" fill="#6b7394" font-size="10" font-family="Inter, sans-serif">0.00</text>
+
+          <!-- X labels -->
+          <text x="170" y="380" text-anchor="middle" fill="#6b7394" font-size="11" font-family="Inter, sans-serif">LLM1</text>
+          <text x="170" y="394" text-anchor="middle" fill="#6b7394" font-size="10" font-family="Inter, sans-serif">Zero-shot</text>
+          <text x="275" y="380" text-anchor="middle" fill="#6b7394" font-size="11" font-family="Inter, sans-serif">LLM2</text>
+          <text x="275" y="394" text-anchor="middle" fill="#6b7394" font-size="10" font-family="Inter, sans-serif">Few-shot</text>
+          <text x="380" y="380" text-anchor="middle" fill="#6b7394" font-size="11" font-family="Inter, sans-serif">LLM3</text>
+          <text x="380" y="394" text-anchor="middle" fill="#6b7394" font-size="10" font-family="Inter, sans-serif">+RAG</text>
+
+          <!-- Mean bias bars (all similar ~0.66-0.69, scaled: 0.45 max → y=60, 0=y=360) -->
+          <!-- Scale: 0.45 = 300px height, so 1 unit = 300/0.45 = 666.7px/unit -->
+          <!-- 0.66 → bar height = 0.66*666.7 = 440 → too high, adjust scale -->
+          <!-- Let's use 0.5 = full height (300px), so scale = 600px/unit -->
+          <!-- Actually let me just show relative bars showing the key differences -->
+
+          <!-- Mean bars (similar, ~0.66, drawn at about 60% height) -->
+          <rect x="110" y="182" width="25" height="178" rx="3" fill="#00d4ff" opacity="0.5"/>
+          <rect x="218" y="182" width="25" height="178" rx="3" fill="#00d4ff" opacity="0.5"/>
+          <rect x="323" y="182" width="25" height="178" rx="3" fill="#00d4ff" opacity="0.5"/>
+          <text x="123" y="177" text-anchor="middle" fill="#00d4ff" font-size="10" font-family="Inter, sans-serif">0.66</text>
+          <text x="231" y="177" text-anchor="middle" fill="#00d4ff" font-size="10" font-family="Inter, sans-serif">0.67</text>
+          <text x="336" y="177" text-anchor="middle" fill="#00d4ff" font-size="10" font-family="Inter, sans-serif">0.69</text>
+
+          <!-- Heterogeneity bars -->
+          <g class="anim-step">
+            <rect x="140" y="88" width="25" height="272" rx="3" fill="#ff6b35" opacity="0.75"/>
+            <rect x="248" y="167" width="25" height="193" rx="3" fill="#ff6b35" opacity="0.75"/>
+            <rect x="353" y="173" width="25" height="187" rx="3" fill="#ff6b35" opacity="0.75"/>
+            <text x="153" y="83" text-anchor="middle" fill="#ff6b35" font-size="10" font-family="Inter, sans-serif">0.41</text>
+            <text x="261" y="162" text-anchor="middle" fill="#ff6b35" font-size="10" font-family="Inter, sans-serif">0.29</text>
+            <text x="366" y="168" text-anchor="middle" fill="#ff6b35" font-size="10" font-family="Inter, sans-serif">0.28</text>
+          </g>
+
+          <!-- Correlation bars -->
+          <g class="anim-step">
+            <rect x="170" y="93" width="25" height="267" rx="3" fill="#b388ff" opacity="0.85"/>
+            <rect x="278" y="147" width="25" height="213" rx="3" fill="#b388ff" opacity="0.85"/>
+            <rect x="383" y="287" width="25" height="73" rx="3" fill="#b388ff" opacity="0.85"/>
+            <text x="183" y="88" text-anchor="middle" fill="#b388ff" font-size="10" font-family="Inter, sans-serif">0.40</text>
+            <text x="291" y="142" text-anchor="middle" fill="#b388ff" font-size="10" font-family="Inter, sans-serif">0.27</text>
+            <text x="396" y="282" text-anchor="middle" fill="#b388ff" font-size="10" font-family="Inter, sans-serif">0.11</text>
+          </g>
+
+          <!-- Legend -->
+          <rect x="82" y="408" width="12" height="8" fill="#00d4ff" opacity="0.5"/>
+          <text x="98" y="416" fill="#6b7394" font-size="9" font-family="Inter, sans-serif">Mean</text>
+          <rect x="140" y="408" width="12" height="8" fill="#ff6b35" opacity="0.75"/>
+          <text x="156" y="416" fill="#6b7394" font-size="9" font-family="Inter, sans-serif">Heterogeneity</text>
+          <rect x="235" y="408" width="12" height="8" fill="#b388ff" opacity="0.85"/>
+          <text x="251" y="416" fill="#6b7394" font-size="9" font-family="Inter, sans-serif">Correlations</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 13: WHY ZERO-SHOT FAILS VARIANCE -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide layout-center" id="slide-13">
+    <div class="slide-content">
+      <p class="label">Study 2 · The Diagnosis</p>
+      <h2>Why does zero-shot collapse variance? Demographics explain almost nothing.</h2>
+      <div class="anim-step">
+        <div class="key-insight">
+          <p>The zero-shot system role is built almost entirely from demographics — age, gender, income, region, education.</p>
+          <p style="color:var(--text-dim); font-size:clamp(11px,1.2vw,16px);">But demographics explain only a tiny fraction of consumer attitudes and behaviors. The LLM doesn't know what makes each person unique beyond those labels.</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="card-row">
+          <div class="card">
+            <p class="label" style="color:var(--accent-red)">Result</p>
+            <p>Every persona gives a similar answer. Synthetic responses cluster around the same point on the scale.</p>
+            <p style="color:var(--text-dim); font-size:clamp(11px,1.2vw,16px);">Standard deviation is significantly lower than human data (p&lt;.05).</p>
+          </div>
+          <div class="card">
+            <p class="label" style="color:var(--accent-green)">The fix</p>
+            <p>Give the LLM context about how this particular persona has responded before (few-shot), or domain knowledge from qualitative research (RAG).</p>
+          </div>
+        </div>
+      </div>
+      <div class="anim-step">
+        <p style="color:var(--text-secondary)">The LLM isn't wrong — it's just underspecified. More context = more realistic heterogeneity.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 14: PRACTICAL GUIDANCE -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide layout-center" id="slide-14">
+    <div class="slide-content">
+      <p class="label">Practical Takeaways</p>
+      <h2>What this means for synthetic panel research</h2>
+      <div class="anim-step">
+        <div class="card-row">
+          <div class="card">
+            <p class="label" style="color:var(--accent-green)">Safe to use zero-shot for</p>
+            <p>Direction-checking. "Does this product score low or high?" The LLM is reliable here.</p>
+          </div>
+          <div class="card">
+            <p class="label" style="color:var(--accent-red)">Do NOT use zero-shot for</p>
+            <p>Variance analysis, segment comparisons, conjoint/choice models, or anything that depends on the distribution shape or inter-variable correlations.</p>
+          </div>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="card-row">
+          <div class="card">
+            <p class="label" style="color:var(--accent-orange)">Add few-shot (response history)</p>
+            <p>Significantly improves heterogeneity and internal consistency. Low cost — just pass prior answers back in-context.</p>
+          </div>
+          <div class="card">
+            <p class="label" style="color:var(--accent-purple)">Add RAG for correlations</p>
+            <p>If you have prior qual data on this category, use it. RAG halves the correlation error (0.40 → 0.11). Critical for psychometric validity.</p>
+          </div>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="key-insight">
+          <p>For qualitative: LLM as moderator (Hybrid 3) is the strongest condition. Always keep human judgment for final synthesis.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 15: CONCLUSION -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="slide layout-center" id="slide-15">
+    <div class="slide-content">
+      <p class="label">The Upshot</p>
+      <h2>The hybrid is not a shortcut. It is a <span class="text-cyan">better process</span>.</h2>
+      <div class="anim-step">
+        <blockquote>
+          <p>"LLMs and humans bring unique, complementary insights to the table — the future of marketing research should involve a structured collaboration between them."</p>
+          <span class="attribution">Arora, Chakraborty &amp; Nishimura · SSRN 2024 / Journal of Marketing 2025</span>
+        </blockquote>
+      </div>
+      <div class="anim-step">
+        <div class="card-row">
+          <div class="card">
+            <p class="big-number text-orange">0 / 5</p>
+            <p>Judges who picked a pure human or pure LLM summary as best.</p>
+          </div>
+          <div class="card">
+            <p class="big-number text-purple">0.11</p>
+            <p>Correlation error with RAG — vs 0.40 zero-shot. RAG nearly eliminates this problem.</p>
+          </div>
+          <div class="card">
+            <p class="big-number text-green">96%</p>
+            <p>Theme recovery when LLM analyzes human data. Plus 23% new themes humans missed.</p>
+          </div>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="key-insight">
+          <p>The operative model: <strong>human-led problem definition → LLM-assisted execution → human-led interpretation.</strong></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- fixed chrome -->
+<div class="progress-bar"></div>
+<div class="slide-counter"></div>
+<div class="step-indicator"></div>
+<div class="nav-hint">Right arrow to advance · Left arrow to go back · F for fullscreen</div>
+
+<script src="js/presentation.js"></script>
+</body>
+</html>

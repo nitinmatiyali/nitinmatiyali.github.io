@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projects — Nitin Matiyali</title>
+  <meta name="description" content="Projects and research explainers by Nitin Matiyali — including the Synthetic Respondents explainer series on AI-powered market research." />
+  <link rel="canonical" href="https://nitinmatiyali.github.io/projects/" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/shared.css" />
+  <style>
+    .project-group { margin-bottom: 3.5rem; }
+    .group-label {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--subtle); margin-bottom: 0.4rem;
+    }
+    .group-title { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .group-desc { font-size: 13.5px; color: var(--muted); margin-bottom: 1.5rem; line-height: 1.65; max-width: 520px; }
+
+    .card-grid { display: flex; flex-direction: column; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+
+    .card {
+      background: var(--bg);
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 1rem; padding: 1.2rem 1.4rem;
+      text-decoration: none; color: inherit;
+      transition: background 0.15s;
+    }
+    .card:hover { background: var(--surface); }
+
+    .card-left { flex: 1; min-width: 0; }
+    .card-num { font-size: 11px; font-weight: 600; color: var(--subtle); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 4px; }
+    .card-title { font-size: 14px; font-weight: 600; line-height: 1.4; margin-bottom: 3px; }
+    .card-desc { font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+
+    .card-arrow {
+      font-size: 16px; color: var(--subtle); flex-shrink: 0;
+      transition: transform 0.15s, color 0.15s;
+    }
+    .card:hover .card-arrow { transform: translateX(3px); color: var(--text); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo"><a href="/">Nitin Matiyali</a></div>
+  <div class="nav-links">
+    <a href="/">About</a>
+    <a href="/writings.html">Writings</a>
+    <a href="/projects/" class="active">Projects</a>
+  </div>
+</nav>
+
+<main>
+  <div class="page-header">
+    <div class="page-eyebrow">Work</div>
+    <div class="page-title">Projects</div>
+    <p class="page-desc">Research, explainers, and side projects — mostly sitting at the intersection of AI and market research.</p>
+  </div>
+
+  <!-- SYNTHETIC RESPONDENTS -->
+  <div class="project-group">
+    <div class="group-label">Explainer Series</div>
+    <div class="group-title">Synthetic Respondents</div>
+    <p class="group-desc">A deep-dive into the emerging science of using LLMs as synthetic survey respondents — what the research says, where the method works, and where it breaks down.</p>
+
+    <div class="card-grid">
+
+      <a href="/projects/synthetic-respondents/out-of-one-many/" class="card">
+        <div class="card-left">
+          <div class="card-num">Paper 02</div>
+          <div class="card-title">Out of One, Many</div>
+          <div class="card-desc">Can a single LLM simulate diverse political opinions? Argyle et al. 2022 on algorithmic fidelity.</div>
+        </div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a href="/projects/synthetic-respondents/digital-twins-funhouse-mirrors/" class="card">
+        <div class="card-left">
+          <div class="card-num">Paper 08</div>
+          <div class="card-title">Digital Twins as Funhouse Mirrors</div>
+          <div class="card-desc">A mega-study stress-testing LLM digital twins across 1000+ participants — where they distort, where they reflect.</div>
+        </div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a href="/projects/synthetic-respondents/ai-human-hybrids/" class="card">
+        <div class="card-left">
+          <div class="card-num">Paper 09</div>
+          <div class="card-title">AI-Human Hybrids for Marketing Research</div>
+          <div class="card-desc">Arora et al. 2025 — blending real respondents with synthetic ones to improve research efficiency without sacrificing quality.</div>
+        </div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a href="/projects/synthetic-respondents/pymc-ssr-method/" class="card">
+        <div class="card-left">
+          <div class="card-num">Paper 10</div>
+          <div class="card-title">LLMs as Synthetic Consumers</div>
+          <div class="card-desc">The PyMC SSR method — a Bayesian framework for using LLM outputs as structured synthetic survey responses.</div>
+        </div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a href="/projects/synthetic-respondents/mission-quality/" class="card">
+        <div class="card-left">
+          <div class="card-num">Bonus</div>
+          <div class="card-title">Mission Possible: High-Quality Online Data</div>
+          <div class="card-desc">What does it actually take to collect high-quality data at scale? A practical framework for research teams.</div>
+        </div>
+        <div class="card-arrow">→</div>
+      </a>
+
+    </div>
+  </div>
+
+</main>
+
+<footer>Nitin Matiyali · Bengaluru, India</footer>
+
+</body>
+</html>

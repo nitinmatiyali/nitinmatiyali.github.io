@@ -112,9 +112,13 @@
     .nav-links { display: flex; gap: 2rem; }
     .nav-links a {
       color: var(--muted); text-decoration: none; font-size: 13px; font-weight: 500;
-      transition: color 0.15s;
+      transition: color 0.15s; padding-bottom: 2px;
     }
     .nav-links a:hover { color: var(--text); }
+    .nav-links a.active {
+      color: var(--text);
+      border-bottom: 2px solid var(--text);
+    }
 
     /* LAYOUT */
     main { max-width: 680px; margin: 0 auto; padding: 0 max(1.5rem, 5vw); }
@@ -285,12 +289,11 @@
 <body>
 
 <nav>
-  <div class="nav-logo">Nitin Matiyali</div>
+  <div class="nav-logo"><a href="/" style="text-decoration:none;color:inherit;">Nitin Matiyali</a></div>
   <div class="nav-links">
-    <a href="#about">About</a>
-    <a href="#experience">Experience</a>
-    <a href="#education">Education</a>
-    <a href="#contact">Contact</a>
+    <a href="/" class="nav-tab active">About</a>
+    <a href="/writings.html" class="nav-tab">Writings</a>
+    <a href="/projects/" class="nav-tab">Projects</a>
   </div>
 </nav>
 

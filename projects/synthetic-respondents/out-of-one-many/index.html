@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Out of One, Many — Paper Explainer</title>
+  <link rel="stylesheet" href="css/presentation.css">
+  <style>
+    /* Prevent content overflow on any slide */
+    .slide-content, .slide-text {
+      overflow: hidden;
+      max-height: 100%;
+    }
+    .slide.layout-center .slide-content {
+      max-height: calc(100vh - var(--slide-padding) * 2);
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+<div style="position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);border-bottom:1px solid #e5e7eb;height:48px;display:flex;align-items:center;padding:0 max(1.5rem,4vw);font-family:Inter,system-ui,sans-serif;gap:0;"><a href="/projects/" style="font-size:13px;font-weight:500;color:#6b7280;text-decoration:none;display:flex;align-items:center;gap:6px;">&#8592; Projects</a><span style="color:#e5e7eb;margin:0 10px;">|</span><a href="/" style="font-size:13px;font-weight:500;color:#6b7280;text-decoration:none;">Nitin Matiyali</a></div>
+
+<div class="presentation">
+
+<!-- ============================================================
+     SLIDE 1 — Title
+     ============================================================ -->
+<section class="slide title-slide layout-center active" id="slide-1">
+  <div class="slide-content">
+    <p class="label" style="letter-spacing:0.2em; margin-bottom:16px;">Paper #2 · Argyle et al. · 2022</p>
+    <h1>Out of One, Many</h1>
+    <p class="subtitle" style="margin-top:12px;">Using Language Models to Simulate Human Samples</p>
+    <div class="anim-step" style="margin-top:36px;">
+      <p style="font-size:clamp(16px,1.8vw,26px); color:var(--text-dim);">
+        A single LLM contains the statistical patterns of every human sub-population it was trained on.<br>
+        This paper shows you how to pull them out — one person at a time.
+      </p>
+    </div>
+    <div class="anim-step" style="margin-top:24px;">
+      <p class="small-text" style="color:var(--text-dim);">Brigham Young University · Political Science + Computer Science</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 2 — The Problem
+     ============================================================ -->
+<section class="slide layout-center" id="slide-2">
+  <div class="slide-content">
+    <p class="label">The Problem</p>
+    <h2>Running Surveys Is Hard</h2>
+    <div class="anim-step">
+      <p>Representative surveys take <span class="text-orange">weeks and cost tens of thousands of dollars</span>.</p>
+    </div>
+    <div class="anim-step">
+      <p>Limited to wealthy countries, English speakers, easy-to-reach populations.</p>
+    </div>
+    <div class="anim-step">
+      <p>Huge swaths of human opinion: <span class="text-orange">systematically under-surveyed</span>.</p>
+    </div>
+    <div class="anim-step">
+      <div class="key-insight">
+        <p>What if you could run a survey on a million synthetic people — for $29?</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 3 — The Core Bet
+     ============================================================ -->
+<section class="slide layout-split" id="slide-3">
+  <div class="slide-text">
+    <p class="label">The Insight</p>
+    <h2>GPT-3 Is Not One Thing</h2>
+    <div class="anim-step">
+      <p>Most people think an LLM has a single "bias" — it's liberal, or Western, or tech-skewed.</p>
+    </div>
+    <div class="anim-step">
+      <p>The authors argue the opposite: it contains <span class="text-cyan">many distributions simultaneously</span> — one per human sub-population.</p>
+    </div>
+    <div class="anim-step">
+      <div class="highlight-box">
+        <p style="margin:0;">The right conditioning text navigates you to the right sub-population's region of the model.</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-visual">
+    <div class="diagram-container">
+      <svg viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="glow-cyan" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#00d4ff" stop-opacity="0.3"/>
+            <stop offset="100%" stop-color="#00d4ff" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="glow-orange" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#ff6b35" stop-opacity="0.3"/>
+            <stop offset="100%" stop-color="#ff6b35" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="glow-green" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#00e676" stop-opacity="0.3"/>
+            <stop offset="100%" stop-color="#00e676" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="glow-purple" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#b388ff" stop-opacity="0.3"/>
+            <stop offset="100%" stop-color="#b388ff" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <!-- Big outer circle = model -->
+        <ellipse cx="250" cy="200" rx="220" ry="180" fill="none" stroke="#334" stroke-width="2" stroke-dasharray="6 4"/>
+        <text x="250" y="28" fill="#6b7394" font-size="14" text-anchor="middle" font-family="Inter, sans-serif">GPT-3</text>
+
+        <!-- Sub-populations (hidden until steps) -->
+        <g class="anim-step">
+          <ellipse cx="160" cy="140" rx="70" ry="55" fill="url(#glow-cyan)" stroke="#00d4ff" stroke-width="1.5" stroke-dasharray="4 3"/>
+          <text x="160" y="138" fill="#00d4ff" font-size="13" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600">Strong Dem.</text>
+          <text x="160" y="156" fill="#00d4ff" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">urban, female, 28</text>
+        </g>
+        <g class="anim-step">
+          <ellipse cx="340" cy="140" rx="70" ry="55" fill="url(#glow-orange)" stroke="#ff6b35" stroke-width="1.5" stroke-dasharray="4 3"/>
+          <text x="340" y="138" fill="#ff6b35" font-size="13" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600">Strong Rep.</text>
+          <text x="340" y="156" fill="#ff6b35" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">rural, male, 58</text>
+        </g>
+        <g class="anim-step">
+          <ellipse cx="160" cy="270" rx="70" ry="50" fill="url(#glow-green)" stroke="#00e676" stroke-width="1.5" stroke-dasharray="4 3"/>
+          <text x="160" y="268" fill="#00e676" font-size="13" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600">Independent</text>
+          <text x="160" y="286" fill="#00e676" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">suburban, 34</text>
+        </g>
+        <g class="anim-step">
+          <ellipse cx="340" cy="270" rx="70" ry="50" fill="url(#glow-purple)" stroke="#b388ff" stroke-width="1.5" stroke-dasharray="4 3"/>
+          <text x="340" y="268" fill="#b388ff" font-size="13" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600">Moderate</text>
+          <text x="340" y="286" fill="#b388ff" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">college-ed, 45</text>
+        </g>
+        <g class="anim-step">
+          <text x="250" y="200" fill="#6b7394" font-size="12" text-anchor="middle" font-family="Inter, sans-serif">+ thousands more</text>
+          <text x="250" y="218" fill="#6b7394" font-size="12" text-anchor="middle" font-family="Inter, sans-serif">sub-populations...</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 4 — What GPT-3 is mathematically
+     ============================================================ -->
+<section class="slide layout-split" id="slide-4">
+  <div class="slide-text">
+    <p class="label">First Principles</p>
+    <h2>What GPT-3 Actually Is</h2>
+    <div class="anim-step">
+      <p>A language model is a <span class="text-cyan">conditional probability distribution</span> over tokens.</p>
+    </div>
+    <div class="anim-step">
+      <div class="formula">P(x<sub>n</sub> | x<sub>1</sub>, x<sub>2</sub>, ..., x<sub>n-1</sub>)</div>
+      <p style="font-size:clamp(14px,1.4vw,20px); color:var(--text-dim);">Probability of next token, given all previous tokens</p>
+    </div>
+    <div class="anim-step">
+      <p>Before it can generate, it needs <span class="text-orange">conditioning text</span> — the context that shifts the whole output distribution.</p>
+    </div>
+    <div class="anim-step">
+      <div class="highlight-box orange">
+        <p style="margin:0;">Context = <code>"Can you come"</code> → high P for "home"<br>
+        Context = <code>"Can you eat"</code> → high P for "this"</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-visual">
+    <div class="diagram-container">
+      <svg viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arr-c" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#00d4ff"/>
+          </marker>
+          <marker id="arr-o" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#ff6b35"/>
+          </marker>
+        </defs>
+
+        <!-- Box: context -->
+        <rect x="30" y="60" width="180" height="60" rx="8" fill="rgba(0,212,255,0.08)" stroke="rgba(0,212,255,0.3)" stroke-width="1.5"/>
+        <text x="120" y="88" fill="#b0b8d0" font-size="13" text-anchor="middle" font-family="Inter, sans-serif">Context</text>
+        <text x="120" y="108" fill="#00d4ff" font-size="13" text-anchor="middle" font-family="Inter, sans-serif" font-style="italic">"I am a conservative..."</text>
+
+        <!-- Arrow to model -->
+        <line x1="210" y1="90" x2="280" y2="90" stroke="#00d4ff" stroke-width="2" marker-end="url(#arr-c)"/>
+
+        <!-- Box: model -->
+        <rect x="285" y="60" width="180" height="60" rx="8" fill="rgba(179,136,255,0.08)" stroke="rgba(179,136,255,0.3)" stroke-width="1.5"/>
+        <text x="375" y="84" fill="#b388ff" font-size="13" text-anchor="middle" font-family="Inter, sans-serif">GPT-3</text>
+        <text x="375" y="104" fill="#b388ff" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">175B parameters</text>
+
+        <!-- Arrow to output dist -->
+        <line x1="375" y1="120" x2="375" y2="175" stroke="#b388ff" stroke-width="2" marker-end="url(#arr-c)"/>
+
+        <!-- Output distribution -->
+        <g class="anim-step">
+          <text x="375" y="195" fill="#6b7394" font-size="13" text-anchor="middle" font-family="Inter, sans-serif">Output distribution</text>
+
+          <!-- token bars -->
+          <rect x="120" y="215" width="50" height="100" rx="4" fill="rgba(255,107,53,0.7)"/>
+          <text x="145" y="330" fill="#ff6b35" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">Conserv.</text>
+          <text x="145" y="210" fill="#ff6b35" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">0.42</text>
+
+          <rect x="185" y="245" width="50" height="70" rx="4" fill="rgba(0,230,118,0.5)"/>
+          <text x="210" y="330" fill="#00e676" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">Patriot</text>
+          <text x="210" y="240" fill="#00e676" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">0.28</text>
+
+          <rect x="250" y="280" width="50" height="35" rx="4" fill="rgba(0,212,255,0.4)"/>
+          <text x="275" y="330" fill="#00d4ff" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">Tradit.</text>
+          <text x="275" y="275" fill="#00d4ff" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">0.14</text>
+
+          <rect x="315" y="295" width="50" height="20" rx="4" fill="rgba(179,136,255,0.4)"/>
+          <text x="340" y="330" fill="#b388ff" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">Liberal</text>
+          <text x="340" y="290" fill="#b388ff" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">0.08</text>
+
+          <rect x="380" y="303" width="50" height="12" rx="4" fill="rgba(255,64,129,0.4)"/>
+          <text x="405" y="330" fill="#ff4081" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">Other</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 5 — Algorithmic Fidelity
+     ============================================================ -->
+<section class="slide section-transition layout-center" id="slide-5">
+  <div class="slide-content">
+    <p class="label">The Key Concept</p>
+    <h2 class="gradient-text">Algorithmic Fidelity</h2>
+    <div class="anim-step">
+      <p>How well does a model's internal patterns of relationships between ideas and attitudes <span class="text-cyan">match those within real human sub-populations</span>?</p>
+    </div>
+    <div class="anim-step">
+      <blockquote>
+        <p>"The model doesn't just contain one bias. It contains <em>many</em>. And by conditioning properly, you can select from them."</p>
+        <span class="attribution">Argyle et al., 2022</span>
+      </blockquote>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 6 — Four Criteria
+     ============================================================ -->
+<section class="slide layout-center" id="slide-6">
+  <div class="slide-content">
+    <p class="label">Algorithmic Fidelity</p>
+    <h2>Four Criteria to Prove It</h2>
+    <div class="two-col" style="margin-top:clamp(16px,2vw,28px);">
+      <div class="anim-step">
+        <div class="card">
+          <p class="label" style="color:var(--accent-cyan);">Criterion 1</p>
+          <p style="color:#fff; font-weight:600; margin-bottom:6px;">Social Science Turing Test</p>
+          <p style="font-size:clamp(14px,1.5vw,22px);">Human evaluators can't reliably distinguish GPT-3 responses from real human responses.</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="card">
+          <p class="label" style="color:var(--accent-orange);">Criterion 2</p>
+          <p style="color:#fff; font-weight:600; margin-bottom:6px;">Backward Continuity</p>
+          <p style="font-size:clamp(14px,1.5vw,22px);">Reading the response, you could infer who wrote it — their demographics, politics, identity.</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="card">
+          <p class="label" style="color:var(--accent-green);">Criterion 3</p>
+          <p style="color:#fff; font-weight:600; margin-bottom:6px;">Forward Continuity</p>
+          <p style="font-size:clamp(14px,1.5vw,22px);">The response flows naturally from the conditioning context — it doesn't contradict the backstory.</p>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="card" style="border-color:rgba(179,136,255,0.3);">
+          <p class="label" style="color:var(--accent-purple);">Criterion 4 ★</p>
+          <p style="color:#fff; font-weight:600; margin-bottom:6px;">Pattern Correspondence</p>
+          <p style="font-size:clamp(14px,1.5vw,22px);">The correlations between variables (ideology ↔ vote, education ↔ party) match real-world data.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 7 — Silicon Sampling Method
+     ============================================================ -->
+<section class="slide section-transition layout-center" id="slide-7">
+  <div class="slide-content">
+    <p class="label">The Method</p>
+    <h2 class="gradient-text">Silicon Sampling</h2>
+    <div class="anim-step">
+      <p>Generate a <span class="text-cyan">virtual population</span> — each person is a GPT-3 completion conditioned on a demographic backstory.</p>
+    </div>
+    <div class="anim-step">
+      <p>Demographics from <span class="text-orange">ANES</span> (American National Election Studies). GPT-3 supplies the responses.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 8 — The Backstory Template
+     ============================================================ -->
+<section class="slide layout-split" id="slide-8">
+  <div class="slide-text">
+    <p class="label">Step by Step</p>
+    <h2>Building a Silicon Individual</h2>
+    <div class="anim-step">
+      <p><span class="text-cyan">1.</span> Take a real survey participant's demographics from ANES.</p>
+    </div>
+    <div class="anim-step">
+      <p><span class="text-orange">2.</span> Fill a first-person template with their age, race, gender, income, party ID, ideology.</p>
+    </div>
+    <div class="anim-step">
+      <p><span class="text-green">3.</span> Append the survey question in first-person format.</p>
+    </div>
+    <div class="anim-step">
+      <p><span class="text-purple">4.</span> Sample GPT-3's completion. That's your silicon response.</p>
+    </div>
+    <div class="anim-step">
+      <p>Repeat for <em>every participant</em> → you have a silicon sample.</p>
+    </div>
+  </div>
+  <div class="slide-visual">
+    <div class="diagram-container">
+      <svg viewBox="0 0 500 420" xmlns="http://www.w3.org/2000/svg">
+        <!-- Template box -->
+        <rect x="20" y="20" width="460" height="200" rx="10" fill="rgba(0,212,255,0.05)" stroke="rgba(0,212,255,0.2)" stroke-width="1.5"/>
+        <text x="40" y="48" fill="#6b7394" font-size="12" font-family="Inter, sans-serif" font-style="italic">Conditioning context (backstory)</text>
+
+        <text x="40" y="76" fill="#b0b8d0" font-size="13" font-family="Inter, sans-serif">Ideologically, I describe myself as</text>
+        <text x="310" y="76" fill="#ff6b35" font-size="13" font-family="Inter, sans-serif" font-weight="600" text-decoration="underline">conservative</text>
+
+        <text x="40" y="100" fill="#b0b8d0" font-size="13" font-family="Inter, sans-serif">. Politically, I am a</text>
+        <text x="192" y="100" fill="#ff6b35" font-size="13" font-family="Inter, sans-serif" font-weight="600" text-decoration="underline">strong Republican</text>
+        <text x="350" y="100" fill="#b0b8d0" font-size="13" font-family="Inter, sans-serif">. I am</text>
+
+        <text x="40" y="124" fill="#ff6b35" font-size="13" font-family="Inter, sans-serif" font-weight="600" text-decoration="underline">male</text>
+        <text x="76" y="124" fill="#b0b8d0" font-size="13" font-family="Inter, sans-serif">, </text>
+        <text x="84" y="124" fill="#ff6b35" font-size="13" font-family="Inter, sans-serif" font-weight="600" text-decoration="underline">upper-class</text>
+        <text x="176" y="124" fill="#b0b8d0" font-size="13" font-family="Inter, sans-serif">, and</text>
+        <text x="214" y="124" fill="#ff6b35" font-size="13" font-family="Inter, sans-serif" font-weight="600" text-decoration="underline">young</text>
+        <text x="258" y="124" fill="#b0b8d0" font-size="13" font-family="Inter, sans-serif">.</text>
+
+        <text x="40" y="150" fill="#b0b8d0" font-size="13" font-family="Inter, sans-serif">When I describe Democrats, I respond with:</text>
+
+        <!-- Question label -->
+        <rect x="30" y="162" width="200" height="24" rx="4" fill="rgba(0,230,118,0.1)" stroke="rgba(0,230,118,0.25)" stroke-width="1"/>
+        <text x="130" y="178" fill="#00e676" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">← Survey question appended</text>
+
+        <!-- Legend -->
+        <rect x="20" y="230" width="12" height="12" rx="2" fill="#ff6b35"/>
+        <text x="38" y="241" fill="#6b7394" font-size="12" font-family="Inter, sans-serif">Dynamically inserted from ANES data</text>
+        <rect x="20" y="252" width="12" height="12" rx="2" fill="#b0b8d0"/>
+        <text x="38" y="263" fill="#6b7394" font-size="12" font-family="Inter, sans-serif">Fixed template text</text>
+
+        <!-- Arrow -->
+        <line x1="250" y1="285" x2="250" y2="320" stroke="#6b7394" stroke-width="2" marker-end="url(#arr-c)"/>
+        <defs>
+          <marker id="arr-c" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#6b7394"/>
+          </marker>
+        </defs>
+
+        <!-- Output box -->
+        <g class="anim-step">
+          <rect x="20" y="325" width="460" height="70" rx="10" fill="rgba(0,230,118,0.08)" stroke="rgba(0,230,118,0.3)" stroke-width="1.5"/>
+          <text x="40" y="350" fill="#6b7394" font-size="12" font-family="Inter, sans-serif" font-style="italic">GPT-3 completion</text>
+          <text x="40" y="374" fill="#00e676" font-size="14" font-family="Inter, sans-serif" font-weight="600">1. Liberal  2. Socialist  3. Communist  4. Atheist</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 9 — The Skewed Marginals Problem
+     ============================================================ -->
+<section class="slide layout-split" id="slide-9">
+  <div class="slide-text">
+    <p class="label">The Core Math Problem</p>
+    <h2>GPT-3's World Is Skewed</h2>
+    <div class="anim-step">
+      <p>Define: <span class="text-cyan">V</span> = vote choice. <span class="text-orange">B</span> = demographic background.</p>
+    </div>
+    <div class="anim-step">
+      <p>GPT-3 models both jointly:</p>
+      <div class="formula" style="font-size:clamp(12px,1.3vw,18px);">P(V, B<sub>GPT3</sub>) = P(V|B<sub>GPT3</sub>) × P(B<sub>GPT3</sub>)</div>
+    </div>
+    <div class="anim-step">
+      <p>Problem: trained on internet text. Internet users ≠ Americans.</p>
+      <p style="font-size:clamp(13px,1.4vw,20px); color:var(--text-dim);">Younger, more male, more tech-savvy, more Western.</p>
+    </div>
+    <div class="anim-step">
+      <div class="highlight-box orange">
+        <p style="margin:0;"><code>P(B<sub>GPT3</sub>)</code> ≠ <code>P(B<sub>True</sub>)</code></p>
+        <p style="margin:6px 0 0; font-size:clamp(13px,1.3vw,18px); color:var(--text-dim);">Ask GPT-3 "how does America vote?" — you get the internet's answer.</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-visual">
+    <div class="diagram-container">
+      <svg viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arr-w" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#ffffff"/>
+          </marker>
+        </defs>
+
+        <!-- GPT-3 distribution (skewed) -->
+        <text x="130" y="35" fill="#6b7394" font-size="14" text-anchor="middle" font-family="Inter, sans-serif">P(B) in GPT-3</text>
+        <text x="130" y="52" fill="#ff5252" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">(internet-skewed)</text>
+        <!-- bars -->
+        <rect x="40" y="170" width="36" height="90" rx="3" fill="rgba(255,107,53,0.7)"/>
+        <text x="58" y="278" fill="#6b7394" font-size="10" text-anchor="middle" font-family="Inter, sans-serif">18-25</text>
+        <rect x="85" y="130" width="36" height="130" rx="3" fill="rgba(255,107,53,0.7)"/>
+        <text x="103" y="278" fill="#6b7394" font-size="10" text-anchor="middle" font-family="Inter, sans-serif">26-35</text>
+        <rect x="130" y="160" width="36" height="100" rx="3" fill="rgba(255,107,53,0.7)"/>
+        <text x="148" y="278" fill="#6b7394" font-size="10" text-anchor="middle" font-family="Inter, sans-serif">36-50</text>
+        <rect x="175" y="220" width="36" height="40" rx="3" fill="rgba(255,107,53,0.4)"/>
+        <text x="193" y="278" fill="#6b7394" font-size="10" text-anchor="middle" font-family="Inter, sans-serif">51-65</text>
+        <rect x="220" y="240" width="36" height="20" rx="3" fill="rgba(255,107,53,0.3)"/>
+        <text x="238" y="278" fill="#6b7394" font-size="10" text-anchor="middle" font-family="Inter, sans-serif">65+</text>
+        <!-- x-axis -->
+        <line x1="30" y1="262" x2="270" y2="262" stroke="#334" stroke-width="1.5"/>
+
+        <!-- arrow -->
+        <g class="anim-step">
+          <line x1="290" y1="190" x2="330" y2="190" stroke="#ffffff" stroke-width="2" marker-end="url(#arr-w)"/>
+          <text x="310" y="178" fill="#6b7394" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">Fix with</text>
+          <text x="310" y="208" fill="#00d4ff" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">ANES data</text>
+        </g>
+
+        <!-- ANES distribution (balanced) -->
+        <g class="anim-step">
+          <text x="420" y="35" fill="#6b7394" font-size="14" text-anchor="middle" font-family="Inter, sans-serif">P(B) from ANES</text>
+          <text x="420" y="52" fill="#00e676" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">(representative)</text>
+          <rect x="340" y="200" width="28" height="60" rx="3" fill="rgba(0,212,255,0.7)"/>
+          <text x="354" y="278" fill="#6b7394" font-size="10" text-anchor="middle" font-family="Inter, sans-serif">18-25</text>
+          <rect x="377" y="190" width="28" height="70" rx="3" fill="rgba(0,212,255,0.7)"/>
+          <text x="391" y="278" fill="#6b7394" font-size="10" text-anchor="middle" font-family="Inter, sans-serif">26-35</text>
+          <rect x="414" y="175" width="28" height="85" rx="3" fill="rgba(0,212,255,0.7)"/>
+          <text x="428" y="278" fill="#6b7394" font-size="10" text-anchor="middle" font-family="Inter, sans-serif">36-50</text>
+          <rect x="451" y="185" width="28" height="75" rx="3" fill="rgba(0,212,255,0.7)"/>
+          <text x="465" y="278" fill="#6b7394" font-size="10" text-anchor="middle" font-family="Inter, sans-serif">51-65</text>
+          <line x1="330" y1="262" x2="490" y2="262" stroke="#334" stroke-width="1.5"/>
+        </g>
+
+        <!-- Key point -->
+        <g class="anim-step">
+          <rect x="30" y="300" width="440" height="80" rx="8" fill="rgba(0,212,255,0.06)" stroke="rgba(0,212,255,0.2)" stroke-width="1"/>
+          <text x="250" y="328" fill="#00d4ff" font-size="13" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600">Use ANES for who Americans are.</text>
+          <text x="250" y="352" fill="#b0b8d0" font-size="13" text-anchor="middle" font-family="Inter, sans-serif">Trust GPT-3 only for P(V|B) — how each group responds.</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 10 — The Math Fix
+     ============================================================ -->
+<section class="slide layout-center" id="slide-10">
+  <div class="slide-content">
+    <p class="label">The Math Fix</p>
+    <h2>Correcting Skewed Marginals</h2>
+
+    <div class="anim-step">
+      <p>What we want:</p>
+      <div class="formula" style="font-size:clamp(14px,1.6vw,24px);">P(V) = ∫ P(V|B) × P(B<sub>True</sub>) dB</div>
+    </div>
+
+    <div class="anim-step">
+      <div class="two-col" style="margin-top:clamp(8px,1vw,14px);">
+        <div class="highlight-box orange">
+          <p class="label" style="color:var(--accent-orange);">Can't trust</p>
+          <div class="formula" style="font-size:clamp(13px,1.3vw,18px); padding:6px;">P(B<sub>GPT3</sub>)</div>
+          <p style="font-size:clamp(12px,1.2vw,17px); color:var(--text-dim); margin-bottom:0;">Who GPT-3 thinks exists — internet-skewed</p>
+        </div>
+        <div class="highlight-box green">
+          <p class="label" style="color:var(--accent-green);">Can trust</p>
+          <div class="formula" style="font-size:clamp(13px,1.3vw,18px); padding:6px;">P(V|B)</div>
+          <p style="font-size:clamp(12px,1.2vw,17px); color:var(--text-dim); margin-bottom:0;">How a <em>given</em> person responds — GPT-3 learned this well</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="anim-step">
+      <p>Sample backstories from ANES. Compute:</p>
+      <div class="formula" style="font-size:clamp(14px,1.6vw,24px);">P(V | B<sub>ANES</sub>) × P(B<sub>ANES</sub>)</div>
+    </div>
+
+    <div class="anim-step">
+      <div class="key-insight">
+        <p>Like <span class="text-cyan">Simpson's Paradox</span> — aggregate GPT-3 misleads. Condition on real demographics: it's accurate.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 11 — Extracting Probabilities
+     ============================================================ -->
+<section class="slide layout-split" id="slide-11">
+  <div class="slide-text">
+    <p class="label">Technical Detail</p>
+    <h2>Turning Text Into Probabilities</h2>
+    <div class="anim-step">
+      <p>For vote prediction, you need a <span class="text-cyan">probability</span>, not just text.</p>
+    </div>
+    <div class="anim-step">
+      <p>Prompt: <code>"In 2016, I voted for ___"</code></p>
+    </div>
+    <div class="anim-step">
+      <p>GPT-3 assigns log-probabilities to every possible next token. Problem: "Trump" is spread across many tokens: <code>Donald</code>, <code>donald</code>, <code>Trump</code>, <code>trump</code>, <code>TRUMP</code>...</p>
+    </div>
+    <div class="anim-step">
+      <div class="highlight-box">
+        <p style="margin:0;"><strong>Fix:</strong> Collapse all variants of each candidate → sum their probabilities → normalize so all candidates sum to 1.</p>
+        <div class="formula" style="margin-top:10px; font-size:clamp(13px,1.3vw,18px);">P(Trump) = softmax( Σ log-P(token ∈ Trump-set) )</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-visual">
+    <div class="diagram-container">
+      <svg viewBox="0 0 500 380" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arr-c2" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#00d4ff"/>
+          </marker>
+        </defs>
+
+        <!-- Token probs -->
+        <text x="250" y="28" fill="#6b7394" font-size="14" text-anchor="middle" font-family="Inter, sans-serif">Raw token log-probabilities</text>
+
+        <rect x="30" y="45" width="200" height="35" rx="5" fill="rgba(255,107,53,0.15)" stroke="rgba(255,107,53,0.3)" stroke-width="1"/>
+        <text x="80" y="68" fill="#ff6b35" font-size="13" font-family="monospace">"Donald"</text>
+        <text x="200" y="68" fill="#6b7394" font-size="13" font-family="monospace" text-anchor="end">-1.2</text>
+
+        <rect x="30" y="88" width="200" height="35" rx="5" fill="rgba(255,107,53,0.15)" stroke="rgba(255,107,53,0.3)" stroke-width="1"/>
+        <text x="80" y="111" fill="#ff6b35" font-size="13" font-family="monospace">"Trump"</text>
+        <text x="200" y="111" fill="#6b7394" font-size="13" font-family="monospace" text-anchor="end">-1.8</text>
+
+        <rect x="30" y="131" width="200" height="35" rx="5" fill="rgba(255,107,53,0.08)" stroke="rgba(255,107,53,0.2)" stroke-width="1"/>
+        <text x="80" y="154" fill="#ff6b35" font-size="13" font-family="monospace" opacity="0.6">"TRUMP"</text>
+        <text x="200" y="154" fill="#6b7394" font-size="13" font-family="monospace" text-anchor="end">-3.1</text>
+
+        <rect x="30" y="174" width="200" height="35" rx="5" fill="rgba(0,212,255,0.15)" stroke="rgba(0,212,255,0.3)" stroke-width="1"/>
+        <text x="80" y="197" fill="#00d4ff" font-size="13" font-family="monospace">"Hillary"</text>
+        <text x="200" y="197" fill="#6b7394" font-size="13" font-family="monospace" text-anchor="end">-2.6</text>
+
+        <rect x="30" y="217" width="200" height="35" rx="5" fill="rgba(0,212,255,0.15)" stroke="rgba(0,212,255,0.3)" stroke-width="1"/>
+        <text x="80" y="240" fill="#00d4ff" font-size="13" font-family="monospace">"Clinton"</text>
+        <text x="200" y="240" fill="#6b7394" font-size="13" font-family="monospace" text-anchor="end">-2.9</text>
+
+        <!-- Arrow collapse -->
+        <g class="anim-step">
+          <line x1="240" y1="190" x2="290" y2="190" stroke="#00d4ff" stroke-width="2" marker-end="url(#arr-c2)"/>
+          <text x="265" y="178" fill="#6b7394" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">collapse</text>
+          <text x="265" y="207" fill="#6b7394" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">+ normalize</text>
+
+          <!-- Final output -->
+          <rect x="295" y="145" width="180" height="50" rx="8" fill="rgba(255,107,53,0.1)" stroke="rgba(255,107,53,0.3)" stroke-width="1.5"/>
+          <text x="385" y="168" fill="#ff6b35" font-size="14" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600">P(Trump) = 0.57</text>
+          <text x="385" y="188" fill="#6b7394" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">all Trump-tokens summed</text>
+
+          <rect x="295" y="210" width="180" height="50" rx="8" fill="rgba(0,212,255,0.1)" stroke="rgba(0,212,255,0.3)" stroke-width="1.5"/>
+          <text x="385" y="233" fill="#00d4ff" font-size="14" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600">P(Clinton) = 0.43</text>
+          <text x="385" y="253" fill="#6b7394" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">all Clinton-tokens summed</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 12 — Three Studies
+     ============================================================ -->
+<section class="slide section-transition layout-center" id="slide-12">
+  <div class="slide-content">
+    <p class="label">Evidence</p>
+    <h2 class="gradient-text">Three Studies</h2>
+    <div class="anim-step">
+      <div class="card-row" style="margin-top:clamp(16px,2vw,28px);">
+        <div class="card">
+          <p class="label" style="color:var(--accent-cyan);">Study 1</p>
+          <p style="color:#fff; font-weight:600;">Social Science Turing Test</p>
+          <p style="font-size:clamp(14px,1.5vw,22px);">Can you tell GPT-3 text from human text?</p>
+        </div>
+        <div class="card">
+          <p class="label" style="color:var(--accent-orange);">Study 2</p>
+          <p style="color:#fff; font-weight:600;">Vote Prediction</p>
+          <p style="font-size:clamp(14px,1.5vw,22px);">Does GPT-3 predict voting like humans across 3 elections?</p>
+        </div>
+        <div class="card" style="border-color:rgba(179,136,255,0.3);">
+          <p class="label" style="color:var(--accent-purple);">Study 3</p>
+          <p style="color:#fff; font-weight:600;">Complex Correlations</p>
+          <p style="font-size:clamp(14px,1.5vw,22px);">Do GPT-3's variable relationships match ANES correlation structure?</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 13 — Study 1
+     ============================================================ -->
+<section class="slide layout-split" id="slide-13">
+  <div class="slide-text">
+    <p class="label">Study 1</p>
+    <h2>Can You Tell Them Apart?</h2>
+    <div class="anim-step">
+      <p>2,107 real people wrote 4-word lists describing Republicans and Democrats (Pigeonholing Partisans dataset).</p>
+    </div>
+    <div class="anim-step">
+      <p>GPT-3 silicon individuals — matched demographics — did the same.</p>
+    </div>
+    <div class="anim-step">
+      <p>2,873 independent evaluators rated <span class="text-cyan">7,675 texts</span> — blind to source.</p>
+      <p style="font-size:clamp(14px,1.5vw,22px); color:var(--text-dim);">Judged: tone, extremity, traits, issues, groups. Guessed: human or computer?</p>
+    </div>
+    <div class="anim-step">
+      <div class="highlight-box">
+        <p style="margin:0; font-weight:600; color:#fff;">What they found:</p>
+        <p style="margin:8px 0 0;">Evaluators correctly labeled <span class="text-cyan">61.7%</span> of human texts as human — and <span class="text-cyan">61.2%</span> of GPT-3 texts as human. Difference: <span class="text-green">p = 0.44</span> (not significant).</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-visual">
+    <div class="diagram-container">
+      <svg viewBox="0 0 500 380" xmlns="http://www.w3.org/2000/svg">
+        <!-- Turing test result -->
+        <text x="250" y="35" fill="#6b7394" font-size="14" text-anchor="middle" font-family="Inter, sans-serif">Identified as "human-written"</text>
+
+        <!-- Bars -->
+        <rect x="80" y="60" width="120" height="200" rx="6" fill="rgba(0,212,255,0.2)" stroke="rgba(0,212,255,0.4)" stroke-width="1.5"/>
+        <rect x="80" y="60" width="120" height="200" rx="6" fill="url(#bar-human)"/>
+        <defs>
+          <linearGradient id="bar-human" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#00d4ff" stop-opacity="0.5"/>
+            <stop offset="100%" stop-color="#00d4ff" stop-opacity="0.15"/>
+          </linearGradient>
+          <linearGradient id="bar-gpt" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#b388ff" stop-opacity="0.5"/>
+            <stop offset="100%" stop-color="#b388ff" stop-opacity="0.15"/>
+          </linearGradient>
+        </defs>
+        <text x="140" y="52" fill="#00d4ff" font-size="22" font-weight="800" text-anchor="middle" font-family="Inter, sans-serif">61.7%</text>
+        <text x="140" y="280" fill="#6b7394" font-size="14" text-anchor="middle" font-family="Inter, sans-serif">Human texts</text>
+
+        <rect x="300" y="64" width="120" height="196" rx="6" fill="url(#bar-gpt)"/>
+        <text x="360" y="52" fill="#b388ff" font-size="22" font-weight="800" text-anchor="middle" font-family="Inter, sans-serif">61.2%</text>
+        <text x="360" y="280" fill="#6b7394" font-size="14" text-anchor="middle" font-family="Inter, sans-serif">GPT-3 texts</text>
+
+        <!-- Baseline -->
+        <line x1="60" y1="260" x2="440" y2="260" stroke="#334" stroke-width="1.5" stroke-dasharray="5 4"/>
+        <text x="450" y="264" fill="#6b7394" font-size="11" text-anchor="start" font-family="Inter, sans-serif">50%</text>
+
+        <!-- p-value callout -->
+        <g class="anim-step">
+          <rect x="140" y="310" width="220" height="40" rx="8" fill="rgba(0,230,118,0.1)" stroke="rgba(0,230,118,0.3)" stroke-width="1.5"/>
+          <text x="250" y="335" fill="#00e676" font-size="14" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600">p = 0.44 — no significant difference</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 14 — Study 1 deeper result
+     ============================================================ -->
+<section class="slide layout-center" id="slide-14">
+  <div class="slide-content">
+    <p class="label">Study 1 · Deeper Result</p>
+    <h2>Same Patterns, Right Exceptions</h2>
+    <div class="anim-step">
+      <p>On all 5 characteristics (tone, extremity, traits, issues, groups) — GPT-3 and human lists <span class="text-cyan">scored nearly identically</span>.</p>
+    </div>
+    <div class="anim-step">
+      <p>The only outlier: <span class="text-orange">"traits"</span> was mentioned far more than anything else — in both human AND GPT-3 data. GPT-3 reproduced this quirk without being told to.</p>
+    </div>
+    <div class="anim-step">
+      <div class="key-insight">
+        <p>GPT-3 mirrored not just the averages — but the <em>anomaly</em>. That's deep pattern correspondence.</p>
+      </div>
+    </div>
+    <div class="anim-step">
+      <p>Partisanship was also detectable: readers could guess the political identity of list writers at above-chance rates for <span class="text-green">both human and silicon lists</span>. The political signal embedded by conditioning is real.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 15 — Study 2
+     ============================================================ -->
+<section class="slide layout-split" id="slide-15">
+  <div class="slide-text">
+    <p class="label">Study 2</p>
+    <h2>Predicting Presidential Votes</h2>
+    <div class="anim-step">
+      <p>ANES data from 2012, 2016, and 2020 elections. 10 demographic variables embedded per backstory.</p>
+    </div>
+    <div class="anim-step">
+      <p>GPT-3 asked to complete: <code>"In [year], I voted for ___"</code></p>
+    </div>
+    <div class="anim-step">
+      <p>Binary vote extracted via log-probability. Compared to actual ANES vote.</p>
+    </div>
+    <div class="anim-step">
+      <div class="highlight-box orange">
+        <p style="margin:0;">2020 is <span class="text-orange">outside GPT-3's training window</span>.</p>
+        <p style="margin:4px 0 0; font-size:clamp(13px,1.3vw,18px); color:var(--text-dim);">Training ended 2019 — tests generalizability.</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-visual">
+    <div class="diagram-container">
+      <svg viewBox="0 0 500 380" xmlns="http://www.w3.org/2000/svg">
+
+        <text x="250" y="30" fill="#6b7394" font-size="14" text-anchor="middle" font-family="Inter, sans-serif">Tetrachoric Correlation: GPT-3 vs ANES</text>
+
+        <!-- 2012 -->
+        <g class="anim-step">
+          <text x="100" y="90" fill="#6b7394" font-size="14" text-anchor="middle" font-family="Inter, sans-serif">2012</text>
+          <circle cx="100" cy="160" r="55" fill="rgba(0,212,255,0.12)" stroke="rgba(0,212,255,0.4)" stroke-width="2"/>
+          <text x="100" y="156" fill="#00d4ff" font-size="30" font-weight="800" text-anchor="middle" font-family="Inter, sans-serif">0.90</text>
+          <text x="100" y="180" fill="#b0b8d0" font-size="12" text-anchor="middle" font-family="Inter, sans-serif">r = tetra.</text>
+        </g>
+
+        <!-- 2016 -->
+        <g class="anim-step">
+          <text x="250" y="90" fill="#6b7394" font-size="14" text-anchor="middle" font-family="Inter, sans-serif">2016</text>
+          <circle cx="250" cy="160" r="60" fill="rgba(0,212,255,0.14)" stroke="rgba(0,212,255,0.5)" stroke-width="2"/>
+          <text x="250" y="156" fill="#00d4ff" font-size="32" font-weight="800" text-anchor="middle" font-family="Inter, sans-serif">0.92</text>
+          <text x="250" y="180" fill="#b0b8d0" font-size="12" text-anchor="middle" font-family="Inter, sans-serif">r = tetra.</text>
+        </g>
+
+        <!-- 2020 -->
+        <g class="anim-step">
+          <text x="400" y="90" fill="#6b7394" font-size="14" text-anchor="middle" font-family="Inter, sans-serif">2020</text>
+          <text x="400" y="68" fill="#ff6b35" font-size="10" text-anchor="middle" font-family="Inter, sans-serif">out-of-training</text>
+          <circle cx="400" cy="160" r="64" fill="rgba(0,230,118,0.12)" stroke="rgba(0,230,118,0.5)" stroke-width="2"/>
+          <text x="400" y="156" fill="#00e676" font-size="34" font-weight="800" text-anchor="middle" font-family="Inter, sans-serif">0.94</text>
+          <text x="400" y="180" fill="#b0b8d0" font-size="12" text-anchor="middle" font-family="Inter, sans-serif">r = tetra.</text>
+        </g>
+
+        <!-- Note on what tetrachoric means -->
+        <g class="anim-step">
+          <rect x="30" y="255" width="440" height="90" rx="8" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+          <text x="250" y="277" fill="#6b7394" font-size="12" text-anchor="middle" font-family="Inter, sans-serif">Tetrachoric correlation = Pearson correlation between the</text>
+          <text x="250" y="296" fill="#6b7394" font-size="12" text-anchor="middle" font-family="Inter, sans-serif">latent continuous variables underlying binary choices.</text>
+          <text x="250" y="316" fill="#00d4ff" font-size="13" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600">0.90+ is remarkably high.</text>
+          <text x="250" y="334" fill="#6b7394" font-size="12" text-anchor="middle" font-family="Inter, sans-serif">Holds for men, women, conservatives, liberals, every racial group, age group.</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 16 — Study 2 detail
+     ============================================================ -->
+<section class="slide layout-center" id="slide-16">
+  <div class="slide-content">
+    <p class="label">Study 2 · Key Detail</p>
+    <h2>GPT-3 Failed in the Right Place</h2>
+    <div class="anim-step">
+      <p>One exception: <span class="text-orange">pure Independents</span> — correlations as low as 0.02.</p>
+    </div>
+    <div class="anim-step">
+      <div class="key-insight">
+        <p>Political science has known this for decades: Independents are the <em>hardest to predict</em>. Most conflicted, least engaged, least likely to vote.</p>
+      </div>
+    </div>
+    <div class="anim-step">
+      <p>GPT-3 <span class="text-cyan">failed exactly where real data fails</span>. It's modeling genuine uncertainty.</p>
+    </div>
+    <div class="anim-step">
+      <p>Over half of all subgroup correlations: <span class="text-green">0.90 or higher</span>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 17 — Study 3 Setup
+     ============================================================ -->
+<section class="slide layout-split" id="slide-17">
+  <div class="slide-text">
+    <p class="label">Study 3 · The Hardest Test</p>
+    <h2>Does the Whole Web of Correlations Match?</h2>
+    <div class="anim-step">
+      <p>Not just toplines — the <span class="text-cyan">full correlation structure</span>.</p>
+      <p style="font-size:clamp(13px,1.4vw,20px); color:var(--text-dim);">11 variables: gender, race, age, education, church, ideology, party ID, vote...</p>
+    </div>
+    <div class="anim-step">
+      <p>For every pair: compute <span class="text-orange">Cramer's V</span> in human data and GPT-3 data. Compare.</p>
+    </div>
+    <div class="anim-step">
+      <div class="highlight-box">
+        <p style="margin:0;"><strong>Cramer's V</strong> measures association between two categorical variables. 0 = no relationship, 1 = perfect.</p>
+        <div class="formula" style="margin-top:8px; font-size:clamp(13px,1.3vw,18px);">V = √( χ² / (n × min(r−1, c−1)) )</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-visual">
+    <div class="diagram-container">
+      <svg viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg">
+        <!-- Scatter plot concept: human V vs GPT-3 V -->
+        <text x="250" y="28" fill="#6b7394" font-size="14" text-anchor="middle" font-family="Inter, sans-serif">Cramer's V: Human vs. GPT-3</text>
+
+        <!-- Axes -->
+        <line x1="60" y1="340" x2="460" y2="340" stroke="#334" stroke-width="2"/>
+        <line x1="60" y1="340" x2="60" y2="55" stroke="#334" stroke-width="2"/>
+        <text x="260" y="370" fill="#6b7394" font-size="12" text-anchor="middle" font-family="Inter, sans-serif">Human Cramer's V</text>
+        <text x="18" y="200" fill="#6b7394" font-size="12" text-anchor="middle" font-family="Inter, sans-serif" transform="rotate(-90, 18, 200)">GPT-3 Cramer's V</text>
+
+        <!-- 45-degree ideal line -->
+        <line x1="60" y1="340" x2="440" y2="60" stroke="#334" stroke-width="1.5" stroke-dasharray="6 4"/>
+
+        <!-- Scatter points -->
+        <g class="anim-step">
+          <!-- Tight cluster around the 45-degree line -->
+          <circle cx="160" cy="254" r="5" fill="#00d4ff" opacity="0.7"/>
+          <circle cx="195" cy="218" r="5" fill="#00d4ff" opacity="0.7"/>
+          <circle cx="130" cy="282" r="5" fill="#00d4ff" opacity="0.7"/>
+          <circle cx="220" cy="192" r="5" fill="#00d4ff" opacity="0.7"/>
+          <circle cx="260" cy="158" r="5" fill="#00d4ff" opacity="0.7"/>
+          <circle cx="95" cy="316" r="5" fill="#00d4ff" opacity="0.7"/>
+          <circle cx="300" cy="128" r="5" fill="#00d4ff" opacity="0.7"/>
+          <circle cx="330" cy="100" r="5" fill="#00d4ff" opacity="0.7"/>
+          <circle cx="170" cy="243" r="5" fill="#00d4ff" opacity="0.7"/>
+          <circle cx="240" cy="176" r="5" fill="#00d4ff" opacity="0.7"/>
+          <circle cx="285" cy="143" r="5" fill="#00d4ff" opacity="0.7"/>
+          <circle cx="110" cy="304" r="5" fill="#00d4ff" opacity="0.7"/>
+          <circle cx="350" cy="82" r="5" fill="#00d4ff" opacity="0.7"/>
+          <circle cx="148" cy="267" r="5" fill="#00d4ff" opacity="0.7"/>
+          <circle cx="207" cy="205" r="5" fill="#b388ff" opacity="0.7"/>
+          <circle cx="390" cy="64" r="5" fill="#b388ff" opacity="0.7"/>
+          <circle cx="75" cy="326" r="5" fill="#b388ff" opacity="0.7"/>
+        </g>
+        <!-- Mean diff label -->
+        <g class="anim-step">
+          <rect x="280" y="280" width="180" height="45" rx="6" fill="rgba(0,230,118,0.1)" stroke="rgba(0,230,118,0.3)" stroke-width="1"/>
+          <text x="370" y="300" fill="#00e676" font-size="13" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600">Mean diff = −0.026</text>
+          <text x="370" y="318" fill="#6b7394" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">Nearly zero systematic error</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 18 — Study 3 result
+     ============================================================ -->
+<section class="slide layout-center" id="slide-18">
+  <div class="slide-content">
+    <p class="label">Study 3 · Result</p>
+    <h2>GPT-3 Reproduced the Whole Map</h2>
+    <div class="anim-step">
+      <p>Where human correlations are <span class="text-cyan">strong</span> (ideology ↔ party ID), GPT-3 correlations are also strong.</p>
+    </div>
+    <div class="anim-step">
+      <p>Where human correlations are <span class="text-orange">weak</span> (gender ↔ church attendance), GPT-3 also shows weak association.</p>
+    </div>
+    <div class="anim-step">
+      <div class="key-insight">
+        <p>The model doesn't invent relationships that don't exist. It doesn't miss ones that do. Mean error across all variable pairs: <span class="text-green">−0.026</span>.</p>
+      </div>
+    </div>
+    <div class="anim-step">
+      <p>This is <strong>Criterion 4 — Pattern Correspondence</strong> — the hardest bar. GPT-3 cleared it across an 11-variable correlation matrix.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 19 — What they don't claim
+     ============================================================ -->
+<section class="slide layout-center" id="slide-19">
+  <div class="slide-content">
+    <p class="label">Important Limits</p>
+    <h2>What This Paper Does NOT Claim</h2>
+    <div class="two-col" style="margin-top:clamp(12px,1.5vw,20px);">
+      <div class="anim-step">
+        <div class="highlight-box orange">
+          <p class="label" style="color:var(--accent-orange);">Not claimed</p>
+          <ul>
+            <li>Simulate a specific individual accurately</li>
+            <li style="margin-top:6px;">Replace human data for causal inference</li>
+            <li style="margin-top:6px;">Generalizes to all domains automatically</li>
+            <li style="margin-top:6px;">Every response will be coherent</li>
+          </ul>
+        </div>
+      </div>
+      <div class="anim-step">
+        <div class="highlight-box green">
+          <p class="label" style="color:var(--accent-green);">What IS claimed</p>
+          <ul>
+            <li>Population-level distributions faithfully reproduced</li>
+            <li style="margin-top:6px;">Good for hypothesis generation and piloting</li>
+            <li style="margin-top:6px;">High fidelity in US political opinion</li>
+            <li style="margin-top:6px;">Cheap — Study 1 cost <span class="text-cyan">$29</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="anim-step" style="margin-top:clamp(10px,1.2vw,16px);">
+      <div class="key-insight">
+        <p>Risk: this fidelity could enable <span class="text-pink">targeted misinformation at scale</span>. The authors flag it explicitly.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 20 — The Research Workflow
+     ============================================================ -->
+<section class="slide layout-center" id="slide-20">
+  <div class="slide-content">
+    <p class="label">Practical Payoff</p>
+    <h2>A New Research Workflow</h2>
+    <div class="anim-step">
+      <div class="card-row">
+        <div class="card">
+          <p class="big-number text-cyan" style="font-size:clamp(36px,4vw,56px);">1</p>
+          <p style="color:#fff; font-weight:600; margin-bottom:4px;">Explore with silicon</p>
+          <p style="font-size:clamp(14px,1.5vw,20px);">Try question wordings, identify key variables, map the hypothesis space — for dollars, in hours.</p>
+        </div>
+        <div class="card">
+          <p class="big-number text-orange" style="font-size:clamp(36px,4vw,56px);">2</p>
+          <p style="color:#fff; font-weight:600; margin-bottom:4px;">Validate with humans</p>
+          <p style="font-size:clamp(14px,1.5vw,20px);">Deploy expensive human surveys more precisely — you already know what matters.</p>
+        </div>
+        <div class="card">
+          <p class="big-number text-green" style="font-size:clamp(36px,4vw,56px);">3</p>
+          <p style="color:#fff; font-weight:600; margin-bottom:4px;">Reach the unreachable</p>
+          <p style="font-size:clamp(14px,1.5vw,20px);">Rare demographics, international populations, intersectional combinations — silicon first, then verify.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 21 — Connection to your project
+     ============================================================ -->
+<section class="slide layout-center" id="slide-21">
+  <div class="slide-content">
+    <p class="label">Why This Matters for Your Research</p>
+    <h2>This Paper Is Your Foundation</h2>
+    <div class="anim-step">
+      <p><code>experiment_runner.py</code> builds backstories → asks LLM to respond: <span class="text-cyan">silicon sampling</span>.</p>
+    </div>
+    <div class="anim-step">
+      <p><code>statistical_evaluator.py</code> checks Cronbach's alpha and diversity: <span class="text-orange">Criteria 3 & 4</span>.</p>
+    </div>
+    <div class="anim-step">
+      <p>Anomaly detector flags demographic divergence: <span class="text-green">algorithmic fidelity check</span>.</p>
+    </div>
+    <div class="anim-step">
+      <div class="key-insight">
+        <p>Argyle et al. proved it for <strong>US political opinion</strong>. Your Indian FMCG experiments test whether it holds in cross-cultural consumer research. That's the frontier.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 22 — Summary
+     ============================================================ -->
+<section class="slide title-slide layout-center" id="slide-22">
+  <div class="slide-content">
+    <p class="label" style="letter-spacing:0.2em;">Summary</p>
+    <h1 style="font-size:clamp(28px,4vw,56px);">Out of One, Many</h1>
+    <div class="anim-step" style="margin-top:clamp(20px,3vw,40px); text-align:left; max-width:800px; margin-left:auto; margin-right:auto;">
+      <div class="card-row">
+        <div class="card" style="flex:none; width:100%;">
+          <p><span class="text-cyan">The bet:</span> GPT-3 contains many human sub-populations. Conditioning on demographics navigates to the right one.</p>
+        </div>
+      </div>
+    </div>
+    <div class="anim-step" style="margin-top:12px; text-align:left; max-width:800px; margin-left:auto; margin-right:auto;">
+      <div class="card">
+        <p><span class="text-orange">The fix:</span> Use ANES for P(B) — who Americans are. Trust GPT-3 only for P(V|B) — how a given person responds. This corrects the internet-skewed training distribution.</p>
+      </div>
+    </div>
+    <div class="anim-step" style="margin-top:12px; text-align:left; max-width:800px; margin-left:auto; margin-right:auto;">
+      <div class="card">
+        <p><span class="text-green">The evidence:</span> Tetrachoric r = 0.90–0.94 across three elections. Cramer's V mean error = −0.026. Turing test: p = 0.44. All criteria met.</p>
+      </div>
+    </div>
+    <div class="anim-step" style="margin-top:12px; text-align:left; max-width:800px; margin-left:auto; margin-right:auto;">
+      <div class="card">
+        <p><span class="text-purple">The term:</span> <em>Algorithmic fidelity</em> — 4 criteria: Turing test, backward continuity, forward continuity, pattern correspondence.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div><!-- .presentation -->
+
+<!-- Fixed Chrome -->
+<div class="progress-bar"></div>
+<div class="slide-counter"></div>
+<div class="step-indicator"></div>
+<div class="nav-hint">Right arrow to advance · Left arrow to go back · F for fullscreen</div>
+
+<script src="js/presentation.js"></script>
+</body>
+</html>
