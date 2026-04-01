@@ -59,5 +59,8 @@ footer {
 }
 
 @media (max-width: 540px) {
-  nav .nav-links { gap: 1.25rem; }
+  nav { padding: 0 1rem; }
+  .nav-logo a { font-size: 13px; }
+  nav .nav-links { gap: 1rem; }
+  nav .nav-links a { font-size: 12px; }
 }
